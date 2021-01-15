@@ -19,3 +19,5 @@ MAX = 100001
 N, K = map(int, input().split())
 time = [0] * MAX
 bfs()
+
+#https://www.acmicpc.net/problem/1697
