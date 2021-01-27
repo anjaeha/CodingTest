@@ -1,10 +1,8 @@
-T = input()
-answer = 0
+def solution(participant, completion):
+    answer = participant - completion
+    return answer
 
-for i in range(1, len(T)):
-    if T[i-1] == T[i]:
-        answer += 5
-    else:
-        answer += 10
+participant = [leo, kiki, eden]
+completion = [eden, kiki]
 
-print(answer + 10)
+solution(participant, completion)
