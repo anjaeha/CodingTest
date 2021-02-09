@@ -15,3 +15,10 @@ for i in range(N):
 for i in range(N):
     if arr[index][1:] == arr[i][1:]:
         print(i+1)
+<<<<<<< HEAD
+=======
+        break
+
+
+#
+>>>>>>> ba2e1fc (2021.02.09)
