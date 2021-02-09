@@ -16,3 +16,6 @@ for i in range(N):
     if arr[index][1:] == arr[i][1:]:
         print(i+1)
         break
+
+
+#
