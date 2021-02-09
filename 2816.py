@@ -23,3 +23,5 @@ res += '1' * idx2 # KBS2 로 이동
 res += '4' * (idx2-1) # KBS2를 두번째로 보냄.
 
 print(res)
+
+#
