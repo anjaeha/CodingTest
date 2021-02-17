@@ -1,3 +1,9 @@
+# from itertools import permutations
+# N, M = map(int, input().split())
+# P = permutations(range(1, N+1), M) 
+# 
+# print(*P)
+# 파이썬에는 라이브러리가 있다.!!
 
 
 n, m = map(int, input().split())
