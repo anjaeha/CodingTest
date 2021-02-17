@@ -27,5 +27,4 @@ def bfs(x, y):
     return t[n-1][m-1]
 
 print(bfs(0,0))
-print(t)
 
