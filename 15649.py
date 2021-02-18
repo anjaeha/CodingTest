@@ -21,15 +21,17 @@ def dfs(cnt):
         print(*arr)
         return
     
-    for i in range(0, n):
+    for i in range(n):
         if(check[i]):
         # i가 True 면 중복되면 안되기때문에 continue
             continue
         check[i] = True
         arr.append(num[i])
         dfs(cnt + 1)
+        
         arr.pop()
 
         check[i] = False
 
 dfs(0)
+

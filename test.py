@@ -1,23 +1,6 @@
-n, m = map(int, input().split())
+num = []
 
-num = [i+1 for i in range(n)]
-check = [False] * n
-arr = []
+num.extend(map(int, input().split()))
 
-def dfs(cnt):
-    if (cnt == m):
-        print(*arr)
-        return
-    
-    for i in range(0, n):
-        if (check[i]):
-            continue
 
-        check[i] = True
-        arr.append(num[i])
-        dfs(cnt + 1)
-        arr.pop()
-
-        check[i] = False
-
-dfs(0)
+print(num)
