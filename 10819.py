@@ -1,9 +1,10 @@
 from itertools import permutations
 
 n = int(input())
+
 arr = list(map(int, input().split()))
 
-p = list(permutations(arr,n))
+p = list(permutations(arr, n))
 r = 0
 
 for i in p:
@@ -11,6 +12,6 @@ for i in p:
     li = list(i)
     for j in range(1, n):
         s += abs(li[j] - li[j-1])
-    r = max(r, s)
+    r = max(r,s)
 
 print(r)
