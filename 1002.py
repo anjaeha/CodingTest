@@ -1,7 +1,7 @@
 for i in range(int(input())):
     x1, y1, r1, x2, y2, r2 = map(int, input().split())
 
-    d = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
+    d = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5 
 
     rs = r1 + r2
 
