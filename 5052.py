@@ -5,8 +5,6 @@ def check():
             return
     print('YES')
 
-
-
 t = int(input())
 
 for i in range(t):
