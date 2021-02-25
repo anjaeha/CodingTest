@@ -1,18 +1,15 @@
-def check():
-    for i in range(len(num) - 1):
-        if num[i] == num[i+1][0:len(num[i])]:
-            print('NO')
-            return
-    print('YES')
+n = int(input())
 
+room = [list(map(int, input().split())) for i in range(n)]
 
+room.sort(key = lambda x : (x[1], x[0]))
 
-t = int(input())
+cnt = 0
+end = 0
 
-for i in range(t):
-    n = int(input())
-    num = []
-    for j in range(n):
-        num.append(input())
-    num.sort()
-    check()    
+for i in room:
+    if end <= i[0]:
+        cnt += 1
+        end = i[1]
+
+print(cnt)
