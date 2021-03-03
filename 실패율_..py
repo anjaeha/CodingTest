@@ -9,6 +9,6 @@ def solution(N, stages):
         else:
             result[stage] = 0
             
-    return sorted(result, key = lambda x : -result[x])
+    return sorted(result.keys(), key = lambda x : -result[x])
     
 print(solution(5, [2,1,2,6,2,4,3,3]))  
