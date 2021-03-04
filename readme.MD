@@ -6,7 +6,9 @@
 모든 문제는 파이썬으로 풀이하였음.    
 번호.py 형식으로 저장함.    
 kakao는 카카오 코딩테스트 문제    
-sw는 SWEA 문제임.
+sw는 SWEA 문제임.    
+d_는 동빈북(이코테) 문제.
+
 
 - 단계별로 풀어보기 : https://www.acmicpc.net/step
 - 삼성SDS방온라인스터디 : https://www.acmicpc.net/group/workbook/list/9962
