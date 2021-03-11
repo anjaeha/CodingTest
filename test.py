@@ -1,3 +1,11 @@
-a = [1,2,3,4,5,6]
+def solution(n):
+    answer = ''
+    
+    while n > 0:
+        answer += str(n%3)
+        n //= 3
+        
+    
+    return int(answer, 3)
 
-print(a[:-1])
+print(solution(45))
