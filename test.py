@@ -1,3 +1,8 @@
-a1 = [[1,2],[2,3]]
+a = "BSACDE"
 
-print(len(a1))
+a = list(map(str, a))
+b = list(a)
+
+print(b.pop(0))
+print(a)
+print(b)
