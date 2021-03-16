@@ -1,8 +1,7 @@
-a = "BSACDE"
+import copy
 
-a = list(map(str, a))
-b = list(a)
+a = [1,2,3,4,5]
+b = a
 
-print(b.pop(0))
-print(a)
-print(b)
+b[1] = 20
+print(a, b)
