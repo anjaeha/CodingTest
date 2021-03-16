@@ -13,23 +13,22 @@ for i in range(2*n-1): # 방향을 전환하는 횟수는 2*n-1로 항상 일정
                                 # 처음에만 n만큼 그 다음부터는 n-1만큼 2번 움직임.
         if i % 4 == 0: # Down
             x += 1
-            if target == num:
-                a, b = x, y
+            
         elif i % 4 == 1: # Right
             y += 1
-            if target == num:
-                a, b = x, y
+            
         elif i % 4 == 2: # Up
             x -= 1
-            if target == num:
-                a, b = x, y
+            
         else: # Left
             y -= 1
-            if target == num:
-                a, b = x, y
+            
 
         res[x][y] = num
         num -= 1
+
+        if (num + 1) == target:
+            a, b = x, y
 
 for i in res:
     print(*i)
