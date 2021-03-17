@@ -1,0 +1,85 @@
+데이터베이스 생성
+CREATE DATABASE Accouont(database name) CHARACTER SET utf8mb4(character set);
+
+데이터베이스 선택
+USE Accouont
+
+데이터베이스 삭제
+DROP DATABASE Accouont
+
+테이블 생성
+CREATE TABLE User
+(
+    ID INT,
+    Name VARCHAR(30),
+    BirthDay DATE,
+    Age INT
+)
+
+테이블 삭제
+DROP TABLE User
+
+테이블에 필드추가
+ALTER TABLE User ADD PhoneNumber INT;
+
+테이블 필드삭제
+ALTER TABLE User DROP Age;
+
+테이블 레코드추가
+INSER INTO User(ID, Name, BirthDay) VALUES(1, '재하', '1996-10-18');
+
+테이블의 레코드 선택
+SELECT * FROM User;
+
+테이블 정렬
+SELECT NAME, DATETIME FROM ANIMAL_INS ORDER BY ANIMAL_ID ASC(DESC)
+
+특정 값을 가지는 테이블 조회
+SELECT ANIMAL_ID, NAME FROM ANIMAL_INS WHERE INTAKE_CONDITION = "Sick"
+
+상위 N개 레코드 조회 - LIMIT 사용
+SELECT NAME FROM ANIMAL_INS ORDER BY DATETIME LIMIT 1
+
+최대값 구하기
+SELECT MAX(DATETIME) FROM ANIMAL_INS
+
+테이블 개수 구하기
+SELECT count(*) from animal_ins 
+
+중복제거한 뒤 테이블 개수
+SELECT COUNT(DISTINCT NAME) FROM ANIMAL_INS
+
+GROUP BY
+SELECT ANIMAL_TYPE, COUNT(*) FROM ANIMAL_INS GROUP BY ANIMAL_TYPE ORDER BY ANIMAL_TYPE
+
+2번 이상 반복된 이름 조회
+SELECT name, count(name) as cnt from animal_ins group by name having cnt >= 2 order by name
+    - having으로 조건부 조회 가능
+
+NAME이 Null이면 'No Name'으로 조회하기
+SELECT ANIMAL_TYPE, IFNULL(NAME, 'No Name'), SEX_UPON_INTAKE FROM ANIMAL_INS
+
+IF문 사용하기
+SELECT ANIMAL_TYPE, IF(isnull(name), 'No name', name), SEX_UPON_INTAKE from animal_ins
+
+JOIN사용해서 
+SELECT ANIMAL_OUTS.ANIMAL_ID, ANIMAL_OUTS.NAME FROM ANIMAL_OUTS
+LEFT OUTER JOIN ANIMAL_INS
+ON ANIMAL_OUTS.ANIMAL_ID = ANIMAL_INS.ANIMAL_ID
+WHERE ANIMAL_INS.ANIMAL_ID IS NULL
+ORDER BY ANIMAL_OUTS.ANIMAL_ID
+
+개 이름에 EL들어갔는지 확인해서 이름과 아이디 조회
+SELECT ANIMAL_ID, NAME
+FROM ANIMAL_INS
+WHERE ANIMAL_TYPE = 'DOG' AND NAME LIKE '%EL%'
+ORDER BY NAME
+
+CASE 문
+CASE WHEN SEX_UPON_INTAKE LIKE '%NE%' 
+OR SEX_UPON_INTAKE LIKE '%SP%' THEN 'O' ELSE 'X' END
+AS '중성화'
+FROM ANIMAL_INS
+
+2018-01-22 형식으로 나오게
+DATE_FORMAT(DATETIME, '%Y-%m-%d')
