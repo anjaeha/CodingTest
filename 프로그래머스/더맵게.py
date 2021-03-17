@@ -13,6 +13,8 @@ def solution(scoville, K):
             answer += 1
         except:
             return -1
+        
+    
     
     return answer
 
