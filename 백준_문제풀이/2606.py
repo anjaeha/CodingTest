@@ -1,29 +1,24 @@
-N = int(input())
-M = int(input())
+n = int(input())
 
-graph = [[0] * (N+1) for _ in range(N+1)]
+s = [[0] * (n+1) for _ in range(n+1)]
+visit = [0 for _ in range(n+1)]
 
-visit = [0 for _ in range(N+1)]
+for _ in range(int(input())):
+    x, y = map(int, input().split())
+    s[x][y] = 1
+    s[y][x] = 1
 
-for i in range(M):
-    a, b = map(int, input().split())
-    graph[a][b] = 1
-    graph[b][a] = 1
+cnt = -1
 
+def dfs(v):
+    global cnt
+    cnt += 1
+    visit[v] = 1
 
-def dfs(k):
-    visit[k] = 1
-    for i in range(1, N+1):
-        if graph[k][i] == 1 and visit[i] == 0:
+    for i in range(1, n+1):
+        if s[v][i] == 1 and visit[i] == 0:
             dfs(i)
-            
 
 
 dfs(1)
-cnt = 0
-for i in range(2, N+1):
-    if visit[i] == 1:
-        cnt += 1
-
 print(cnt)
-
