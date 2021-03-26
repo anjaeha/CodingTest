@@ -9,12 +9,9 @@ for i in range(n):
 
 r.sort(key = lambda x : x[0])
 
-cnt = 0
-end = r[0][1]
-
 for i in range(n):
-    if end <= r[i][0]:
-        end = r[i][1]
-        cnt += 1
+    if len(h) != 0 and h[0] <= r[i][0]:
+        heapq.heappop(h)
+    heapq.heappush(h, r[i][1])
 
-print(cnt + 1)
+print(len(h))
