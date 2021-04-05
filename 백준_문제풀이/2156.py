@@ -3,10 +3,9 @@ w = [0]
 
 for i in range(n):
     w.append(int(input()))
-    
+
 dp = [0]
 dp.append(w[1])
-
 if n > 1:
     dp.append(w[1] + w[2])
 
