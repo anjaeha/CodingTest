@@ -1,43 +1,39 @@
-N = int(input())
+import sys
+input = sys.stdin.readline
+
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
 
 apt = []
 city = []
 cnt = 0
 
-dx = [1, -1, 0, 0]
-dy = [0, 0, -1, 1]
+n = int(input())
 
+for i in range(n):
+    city.append(list(map(int, input().strip())))
 
-
-for i in range(N):
-    city.append(list(map(int,input())))
-
-
-def dfs(i, j):
+def dfs(x ,y):
     global cnt
-    city[i][j] = 0
     cnt += 1
+    city[x][y] = 0
 
-    for k in range(4):
-        a = i + dx[k]
-        b = j + dy[k]
+    for i in range(4):
+        nx = x + dx[i]
+        ny = y + dy[i]
 
-        if a < 0 or a >= N or b < 0 or b >= N:
-            continue
+        if 0 <= nx < n and 0 <= ny < n and city[nx][ny] == 1:
+            dfs(nx, ny)
 
-        if city[a][b] == 1:
-            dfs(a, b)
-
-
-for i in range(N):
-    for j in range(N):
+for i in range(n):
+    for j in range(n):
         if city[i][j] == 1:
             cnt = 0
             dfs(i, j)
             apt.append(cnt)
 
 
-print(len(apt))
 apt.sort()
-for i in range(len(apt)):
-    print(apt[i])
+print(len(apt))
+for i in apt:
+    print(i)
