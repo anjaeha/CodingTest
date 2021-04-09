@@ -1,49 +1,52 @@
+import sys
+input = sys.stdin.readline
 from collections import deque
+sys.setrecursionlimit(10000)
 
-m, n = map(int, input().split())
-
-t = []
-queue = deque()
-dx = [1, -1, 0, 0]
+dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
+m, n = map(int, input().split())
+s = []
 for i in range(n):
-    t.append(list((map(int, input().split()))))
+    s.append(list(map(int, input().split())))
 
-
+q = deque()
 def bfs():
-    while queue:
-        a, b = queue.popleft()
-
+    while q:
+        x, y = q.popleft()
         for i in range(4):
-            x = a + dx[i]
-            y = b + dy[i]
+            nx = x + dx[i]
+            ny = y + dy[i]
 
-            if 0 <= x < n and 0 <= y < m and t[x][y] == 0:
-                t[x][y] = t[a][b] + 1
-                queue.append([x,y])
+            if nx < 0 or nx >= n or ny < 0 or ny >= m:
+                continue
+
+            if s[nx][ny] == -1:
+                continue
+
+            
+            if s[nx][ny] == 0:
+                s[nx][ny] = s[x][y] + 1
+                q.append((nx, ny))
+
 
 for i in range(n):
     for j in range(m):
-        if t[i][j] == 1:
-            queue.append([i, j])
+        if s[i][j] == 1:
+            q.append((i, j))
 
-bfs() # 여기까지 토마토 익히기.
+bfs()
 
-isTrue = False
-result = -2
+isTrue = True
+day = 0
+for i in range(n):
+    for j in range(m):
+        if s[i][j] == 0:
+            isTrue = False
+        day = max(day, s[i][j])
 
-for i in t:
-    for j in i:
-        if j == 0:
-            isTrue = True
-        result = max(result, j)
-
-if isTrue == True:
-    print(-1)
-    #익지 못하는 상황
-elif result == -1:
-    print(0)
-    # 이미 다 익어있음.
+if isTrue:
+    print(day - 1)
 else:
-    print(result - 1)
+    print(-1)

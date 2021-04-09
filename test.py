@@ -1,39 +1,24 @@
+from collections import deque
 import sys
 input = sys.stdin.readline
 
-dx = [-1, 1, 0, 0]
-dy = [0, 0, -1, 1]
+n, k = map(int, input().split())
+MAX = 100001
+time = [0] * MAX
 
-apt = []
-city = []
-cnt = 0
+def bfs():
+    q = deque()
+    q.append(n)
 
-n = int(input())
+    while q:
+        x = q.popleft()
 
-for i in range(n):
-    city.append(list(map(int, input().strip())))
+        if x == k:
+            print(time[x])
+            return
 
-def dfs(x ,y):
-    global cnt
-    cnt += 1
-    city[x][y] = 0
-
-    for i in range(4):
-        nx = x + dx[i]
-        ny = y + dy[i]
-
-        if 0 <= nx < n and 0 <= ny < n and city[nx][ny] == 1:
-            dfs(nx, ny)
-
-for i in range(n):
-    for j in range(n):
-        if city[i][j] == 1:
-            cnt = 0
-            dfs(i, j)
-            apt.append(cnt)
-
-
-apt.sort()
-print(len(apt))
-for i in apt:
-    print(i)
+        for i in (x-1, x+1, x*2):
+            if 0 <= i < MAX and time[i] == 0:
+                time[i] = time[x] + 1
+                q.append(i)
+bfs()

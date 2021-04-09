@@ -1,39 +1,35 @@
-def bfs(x, y):
-    queue = deque()
-    queue.append((x, y))
+import sys
+from collections import deque
+sys.setrecursionlimit(10000)
+input = sys.stdin.readline
 
-    while queue:
-        x, y = queue.popleft()
+n, m = map(int,input().split())
+s = []
+
+for i in range(n):
+    s.append(list(map(int, input().strip())))
+
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
+
+def bfs(x, y):
+    q = deque()
+    q.append((x, y))
+
+    while q:
+        x, y = q.popleft()
 
         for i in range(4):
             nx = x + dx[i]
             ny = y + dy[i]
 
-            if nx < 0 or ny < 0 or nx >= N or ny >= M:
-            # 미로를 벗어나면 continue
+            if nx < 0 or nx >= n or ny < 0 or ny >= m:
                 continue
-            if arr[nx][ny] == 0:
-            # 이동할 수 없는 칸인 0이어도 continue
-                continue
-            if arr[nx][ny] == 1:
-                arr[nx][ny] = arr[x][y] + 1
-                queue.append((nx, ny))
-    return arr[N - 1][M - 1]
 
+            if s[nx][ny] == 1:
+                s[nx][ny] = s[x][y]  + 1
+                q.append((nx, ny))
+    
 
-from collections import deque
-
-N, M = map(int, input().split())
-
-arr = []
-for i in range(N):
-    arr.append(list(map(int, input())))
-    # 공백없이 0 또는 1로 값을 받을거라 append로 값을 받음
-
-dx = [-1, 1, 0, 0]
-# 상 하 좌 우
-# X값이 바뀌면 y측으로 이동함
-dy = [0, 0, -1, 1]
-# y 값이 바뀌면 x축으로 이동함
-
-print((bfs(0,0)))
+bfs(0, 0)
+print(s[n-1][m-1])
