@@ -6,12 +6,12 @@ n, m = map(int, input().split())
 D = {'S' : 0, 'E' : 1, 'N' : 2, 'W' : 3}
 dx = [-1, 0, 1, 0]
 dy = [0, 1, 0, -1]
-#상, 우, 하, 좌
+
 w = [[0] * (a+1) for _ in range(b+1)]
 r = [[0, 0, 0] for _ in range(n+1)]
 
 def solve(i, d, c):
-    x, y, z = r[i]
+    x, y, z, = r[i]
     w[x][y] = 0
     for _ in range(c):
         if d == 'L':
@@ -39,7 +39,7 @@ for i in range(1, n+1):
     r[i] = [int(y), int(x), D[z]]
 crash = False
 
-for _ in range(m):
+for i in range(m):
     i, d, c = input().split()
     if not crash:
         crash = solve(int(i), d, int(c))
