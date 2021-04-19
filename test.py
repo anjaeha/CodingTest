@@ -1,20 +1,32 @@
-k, n = map(int, input().split())
-arr = []
-for i in range(k):
-    arr.append(int(input()))
+n, c = map(int, input().split())
 
-left = 1
-right = max(arr)
+x = [int(input()) for _ in range(n)]
+x.sort()
 
-while left <= right:
-    mid = (left+right) // 2
-    sum = 0
-    for i in arr:
-        sum += i // mid
+start = 1
+end = x[-1] - x[0]
 
-    if sum >= n:
-        left = mid + 1
+result = 0
+
+while start <= end:
+    mid = (start + end) // 2
+    vlaue = x[0]
+    cnt = 1
+
+    for i in range(1, len(x)):
+        if x[i] >= vlaue + mid:
+            cnt += 1
+            vlaue = x[i]
+        
+    if cnt >= c:
+        start = mid + 1
+        result = mid
     else:
-        right = mid - 1
+        end = mid - 1
 
-print(right)
+
+
+print(result)
+
+# 다시 풀기
+# https://solved.ac/search?query=tag%3Abinary_search+&sort=level&direction=asc&page=1
