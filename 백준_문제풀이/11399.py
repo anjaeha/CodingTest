@@ -1,14 +1,15 @@
+import sys
+input = sys.stdin.readline
+
 n = int(input())
-
 p = list(map(int, input().split()))
-
 p.sort()
 
-cnt = 0
-s = 0
+wait = 0
+answer = 0
 
 for i in range(n):
-    cnt += p[i]
-    s += cnt
-
-print(s)
+    answer += wait + p[i]
+    wait += p[i]
+    
+print(answer)
