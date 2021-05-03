@@ -1,21 +1,22 @@
+import sys
 import heapq
+input = sys.stdin.readline
 
 n = int(input())
-
-heap = []
-
+card = []
 for i in range(n):
-    num = int(input())
-    heapq.heappush(heap, num)
+    heapq.heappush(card, int(input()))
+
 
 result = 0
 
-while len(heap) != 1:
-    one = heapq.heappop(heap)
-    two = heapq.heappop(heap)
+while len(card) != 1:
+    one = heapq.heappop(card)
+    two = heapq.heappop(card)
 
     sum_value = one + two
     result += sum_value
-    heapq.heappush(heap, sum_value)
+
+    heapq.heappush(card, sum_value)
 
 print(result)
