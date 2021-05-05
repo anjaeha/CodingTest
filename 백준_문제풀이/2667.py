@@ -1,33 +1,48 @@
-N = int(input())
+import sys
+from collections import deque
+input = sys.stdin.readline
 
-graph = [list(map(int, input())) for _ in range(N)]
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
 
-dx, dy = [1, 0, -1, 0], [0, 1, 0, -1]
+n = int(input())
 
-cnt = 0
-apt = []
+s = [list(map(int, input().strip())) for _ in range(n)]
 
-def dfs(i, j):
-    global cnt
-    graph[i][j] = "0"
-    cnt += 1
+count = []
 
-    for way in range(4):
-        ii = i + dx[way] 
-        jj = j + dy[way]
-        if ii < 0 or ii >= N or jj < 0 or jj >= N:
-            continue
+def bfs(a, b):
+    cnt = 1
+    q = deque()
+    q.append((a, b))
+    s[a][b] = 0
 
-        if graph[ii][jj] == 1:
-            dfs(ii, jj)
+    while q:
+        x, y = q.popleft()
+
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+
+            if nx < 0 or nx >= n or ny < 0 or ny >= n:
+                continue
+
+            if s[nx][ny] == 1:
+                q.append((nx, ny))
+                s[nx][ny] = 0
+                cnt += 1
+    
+    count.append(cnt)
 
 
-for i in range(N):
-    for j in range(N):
-        if graph[i][j] == 1:
-            cnt = 0
-            dfs(i, j)
-            apt.append(cnt)
 
-print(len(apt))
-print('\n'.join(list(map(str, sorted(apt)))))
+for i in range(n):
+    for j in range(n):
+        if s[i][j] == 1:
+            bfs(i, j)
+
+
+count.sort()
+print(len(count))
+for i in count:
+    print(i)
