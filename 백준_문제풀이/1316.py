@@ -1,10 +1,16 @@
-T = int(input())
+import sys
+input = sys.stdin.readline
 
-cnt = 0
+n = int(input())
 
-for case in range(T):
+for case in range(n):
+
     word = input()
-    if list(word) == sorted(word, key=word.find):
-        cnt += 1
-        
-print(cnt)
+
+    for i in range(len(word) - 1):
+        if word[i] != word[i+1]:
+            if word[i] in word[i+1:]:
+                n -= 1
+                break
+
+print(n)

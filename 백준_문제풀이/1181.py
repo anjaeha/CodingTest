@@ -1,15 +1,17 @@
+import sys
+input = sys.stdin.readline
+
 n = int(input())
-arr = []
 
-
+word = []
 for i in range(n):
-    word = input()
-    word_cnt = len(word)
-    arr.append((word, word_cnt))
+    word.append(input().strip())
 
-arr = list(set(arr))
+word.sort(key = lambda x : (len(x), x))
+answer = []
+for v in word:
+    if v not in answer:
+        answer.append(v)
 
-arr.sort(key = lambda x : (x[1], x[0]))
-
-for i in arr:
-    print(i[0])
+for i in answer:
+    print(i)
