@@ -1,18 +1,19 @@
 import sys
 input = sys.stdin.readline
 
-n = int(input())
+t = int(input())
 
-file = dict()
+s = dict()
 
-for i in range(n):
-    ext = (input().split('.'))[1]
-    if not ext in file:
-        file[ext] = 1
+for i in range(t):
+    e = input().strip().split('.')[1]
+
+    if e not in s:
+        s[e] = 1
     else:
-        file[ext] += 1
+        s[e] += 1
 
-file_sort = sorted(file.items())
+s = sorted(s.items(), key = lambda x : x[0])
 
-for key, value in file_sort:
-    print(key.rstrip(), value)
+for i in range(len(s)):
+    print(s[i][0], s[i][1])

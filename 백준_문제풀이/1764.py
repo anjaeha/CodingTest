@@ -1,16 +1,20 @@
+import sys
+input = sys.stdin.readline
+
 n, m = map(int, input().split())
 
-hear = set()
-see = set()
+h = set()
+s = set()
 
 for i in range(n):
-    hear.add(input())
+    h.add(input().strip())
+
 for i in range(m):
-    see.add(input())
+    s.add(input().strip())
 
 
-answer = sorted(list(hear & see))
+answer = sorted(list(h & s))
 
 print(len(answer))
-for i in range(len(answer)):
-    print(answer[i])
+for i in answer:
+    print(i)
