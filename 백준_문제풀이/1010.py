@@ -1,13 +1,12 @@
-import math
+import sys
+input = sys.stdin.readline
+from math import factorial
 
-for i in range(int(input())):
-    N, M = map(int, input().split())
+t = int(input())
 
-    a = math.factorial(M)
-    b = math.factorial(M-N)
-    c = math.factorial(N)
-    print(a//b//c)
+for case in range(t):
+    w, e = map(int, input().split())
+    
+    result = factorial(e) // factorial(w) // factorial(e-w)
 
-
-#   경우의 수를 구하는 문제로 M개 중에 N개를 고르는 문제  => mCn
-#   M! // M-N! // N! 로 해결.
+    print(result)
