@@ -12,4 +12,3 @@ for i in range(n):
         end = room[i][1]
 
 print(cnt)
-print(room)
