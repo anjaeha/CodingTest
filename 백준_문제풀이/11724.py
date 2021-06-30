@@ -26,18 +26,19 @@ print(cnt)
 
 """
 import sys
-from collections import deque
 input = sys.stdin.readline
+from collections import deque
 
 n, m = map(int, input().split())
 
-graph = [[0] * (n+1) for _ in range(n+1)]
+s = [[0] * (n+1) for _ in range(n+1)]
 visit = [0] * (n+1)
 
 for i in range(m):
     x, y = map(int, input().split())
-    graph[x][y] = 1
-    graph[y][x] = 1
+    s[x][y] = 1
+    s[y][x] = 1
+
 
 def bfs(v):
     q = deque()
@@ -48,14 +49,15 @@ def bfs(v):
         x = q.popleft()
 
         for i in range(1, n+1):
-            if visit[i] == 0 and graph[x][i] == 1:
+            if s[x][i] == 1 and visit[i] == 0:
                 q.append(i)
                 visit[i] = 1
+
+
 cnt = 0
 for i in range(1, n+1):
     if visit[i] == 0:
         bfs(i)
         cnt += 1
-
 print(cnt)
 """

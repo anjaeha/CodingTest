@@ -1,24 +1,22 @@
 import sys
 input = sys.stdin.readline
+
 n, m = map(int, input().split())
+t = list(map(int, input().split()))
 
-tree = list(map(int, input().split()))
+left = 1
+right = max(t)
 
-start = 1
-end = max(tree)
-
-while start <= end:
-    mid = (start + end) // 2
-
+while left <= right:
     cnt = 0
+    mid = (left + right) // 2
 
-    for i in tree:
-        if i >= mid:
-            cnt += i - mid
-
+    for i in range(n):
+        cnt += (t[i] - mid if t[i] - mid >= 0 else 0)
+    
     if cnt >= m:
-        start = mid + 1
+        left = mid + 1
     else:
-        end = mid - 1
+        right = mid - 1
 
-print(end)
+print(right)
