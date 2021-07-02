@@ -1,30 +1,27 @@
 def solution(answers):
     answer = []
-    num1 = [1,2,3,4,5]
-    num2 = [2,1,2,3,2,4,2,5]
-    num3 = [3,3,1,1,2,2,4,4,5,5]
+    one = [1,2,3,4,5] #5개
+    two = [2,1,2,3,2,4,2,5] #8개
+    three = [3,3,1,1,2,2,4,4,5,5] # 10개
     
-    cnta = 0
-    cntb = 0
-    cntc = 0
+    cnt1, cnt2, cnt3 = 0, 0, 0
+    
     
     for i in range(len(answers)):
-        if answers[i] == num1[i % len(num1)]:
-            cnta += 1
-        if answers[i] == num2[i % len(num2)]:
-            cntb += 1
-        if answers[i] == num3[i % len(num3)]:
-            cntc += 1
+        if answers[i] == one[i%5]:
+            cnt1 += 1
+        if answers[i] == two[i%8]:
+            cnt2 += 1
+        if answers[i] == three[i%10]:
+            cnt3 += 1
+            
+    cnt = max(cnt1, cnt2, cnt3)
     
-    max_num = max(cnta, cntb, cntc)
-    
-    if max_num == cnta:
+    if cnt1 == cnt:
         answer.append(1)
-    if max_num == cntb:
+    if cnt2 == cnt:
         answer.append(2)
-    if max_num == cntc:
+    if cnt3 == cnt:
         answer.append(3)
-        
-    answer = sorted(answer)
-    
+            
     return answer

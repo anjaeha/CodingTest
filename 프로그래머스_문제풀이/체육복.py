@@ -1,22 +1,24 @@
 def solution(n, lost, reserve):
-    answer = 0
-    for i in range(1, n+1):
-        if i not in lost:
-            answer += 1
-        else:
-            if i in reserve:
-                answer += 1
-                reserve.remove(i)
-                lost.remove(i)
+    number = [1] * (n+1)
+    number[0] = 0
     
     for i in lost:
-        if i-1 in reserve:
-            answer += 1
-            reserve.remove(i-1)
-        elif i+1 in reserve:
-            answer += 1
-            reserve.remove(i+1)
+        number[i] -= 1
+    for i in reserve:
+        number[i] += 1
     
-    return answer
-
-print(solution(3, [3], [1]))
+    for i in range(1, n):
+        if number[i] == 0:
+            if number[i-1] == 2:
+                number[i-1] = 1
+                number[i] = 1
+            elif number[i+1] == 2:
+                number[i+1] = 1
+                number[i] = 1
+    cnt = 0
+    for i in number:
+        if i >= 1:
+            cnt += 1
+    
+    
+    return cnt
