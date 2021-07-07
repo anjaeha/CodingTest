@@ -2,17 +2,12 @@ import sys
 input = sys.stdin.readline
 
 n, m = map(int, input().split())
-
-arr = []
-temp = [[0] * m for i in range(n)]
-
-for i in range(n):
-    arr.append(list(map(int, input().split())))
-
-dx = [0, 0, -1, 1]
-dy = [-1, 1, 0, 0]
-
+arr = [list(map(int, input().split())) for _ in range(n)]
+temp = [[0] * m for _ in range(n)]
 result = 0
+
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
 
 def virus(x, y):
     for i in range(4):
@@ -23,6 +18,7 @@ def virus(x, y):
             if temp[nx][ny] == 0:
                 temp[nx][ny] = 2
                 virus(nx, ny)
+
 
 def get_score():
     score = 0
@@ -45,8 +41,10 @@ def dfs(count):
             for j in range(m):
                 if temp[i][j] == 2:
                     virus(i, j)
+
         result = max(result, get_score())
         return
+
 
     for i in range(n):
         for j in range(m):
@@ -54,8 +52,8 @@ def dfs(count):
                 arr[i][j] = 1
                 count += 1
                 dfs(count)
-                arr[i][j] = 0
                 count -= 1
+                arr[i][j] = 0
 
 dfs(0)
 print(result)
