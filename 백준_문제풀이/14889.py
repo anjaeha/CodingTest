@@ -1,35 +1,27 @@
-from itertools import combinations
 import sys
+from itertools import combinations
 input = sys.stdin.readline
 
 n = int(input())
+s = [list(map(int, input().split())) for _ in range(n)]
 
-s = []
-for i in range(n):
-    s.append(list(map(int, input().split())))
+member = [i for i in range(n)]
+cases = list(combinations(member, n // 2))
+value = 101
 
-members = [i for i in range(n)]
-p_team = []
+for case_a in cases:
+    A = 0
+    B = 0
 
-for team in list(combinations(members, n // 2)):
-    p_team.append(team)
+    for x in case_a:
+        for y in case_a:
+            A += s[x][y]
+    
+    case_b = [i for i in range(n) if i not in case_a]
+    for x in case_b:
+        for y in case_b:
+            B += s[x][y]
 
-min_stat = 101
-for i in range(len(p_team) // 2):
-    team = p_team[i]
-    stat_A = 0
-    for j in range(n // 2):
-        member = team[j]
-        for k in team:
-            stat_A += s[member][k]
+    value = min(value, abs(A-B))
 
-    team = p_team[-i-1]
-    stat_B = 0
-    for j in range(n // 2):
-        member = team[j]
-        for k in team:
-            stat_B += s[member][k]
-
-    min_stat = min(min_stat, abs(stat_A - stat_B))
-
-print(min_stat)
+print(value)
