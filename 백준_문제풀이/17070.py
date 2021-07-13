@@ -1,0 +1,30 @@
+import sys
+input = sys.stdin.readline
+
+def dfs(x, y, d):
+    global ans
+    if x == n - 1 and y == n - 1:
+        ans += 1
+        return
+
+    if d == 0 or d == 2:
+        if y + 1 < n:
+            if s[x][y+1] == 0:
+                dfs(x, y + 1, 0)    
+    
+    if d == 1 or d == 2:
+        if x + 1 < n:
+            if s[x+1][y] == 0:
+                dfs(x + 1, y, 1)
+    
+    if d == 0 or d == 1 or d == 2:
+        if x + 1 < n and y + 1 < n:
+            if s[x+1][y] == 0 and s[x][y+1] == 0 and s[x+1][y+1] == 0:
+                dfs(x + 1, y + 1, 2)
+
+
+n = int(input())
+s = [list(map(int, input().split())) for _ in range(n)]
+ans = 0
+dfs(0, 1, 0)
+print(ans)
