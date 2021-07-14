@@ -1,29 +1,30 @@
 import sys
 input = sys.stdin.readline
 
+s = [0] * 21
 n = int(input())
 
-s = set()
 for _ in range(n):
     tmp = input().strip().split()
 
     if len(tmp) == 1:
         if tmp[0] == 'all':
-            s = set(i for i in range(1, 21))
+            s = [1] * 21
         else:
-            s = set()
-
+            s = [0] * 21
         continue
 
-    word, num = tmp[0], int(tmp[1])
+    word = tmp[0]
+    num = int(tmp[1])
+
     if word == 'add':
-        s.add(num)
+        s[num] = 1
     elif word == 'remove':
-        s.discard(num)
+        s[num] = 0
     elif word == 'check':
-        sys.stdout.write('1\n' if num in s else '0\n')
-    elif word == 'toggle':
-        if num in s:
-            s.discard(num)            
+        if s[num] == 1:
+            sys.stdout.write('1\n')
         else:
-            s.add(num)
+            sys.stdout.write('0\n')
+    elif word == 'toggle':
+        s[num] = abs(s[num] - 1)
