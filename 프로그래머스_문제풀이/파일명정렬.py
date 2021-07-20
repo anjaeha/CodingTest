@@ -1,18 +1,18 @@
 def solution(files):
     answer = []
-    for f in files:
+    
+    
+    for file in files:
         head, number, tail = '', '', ''
-        
-        check = False
-        
-        for i in range(len(f)):
-            if f[i].isdigit():
-                number += f[i]
-                check = True
-            elif not check:
-                head += f[i]
+        flag = False
+        for f in range(len(file)):
+            if not flag and not file[f].isdigit():
+                head += file[f]
+            elif file[f].isdigit():
+                number += file[f]
+                flag = True
             else:
-                tail = f[i:]
+                tail += file[f:]
                 break
         answer.append((head, number, tail))
     answer.sort(key = lambda x : (x[0].lower(), int(x[1])))
