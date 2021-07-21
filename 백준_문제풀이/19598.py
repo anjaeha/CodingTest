@@ -1,29 +1,16 @@
+import heapq
 import sys
 input = sys.stdin.readline
 
 n = int(input())
-room = []
+room = [list(map(int, input().split())) for _ in range(n)]
+room.sort(key = lambda x : x[0])
+end = []
 
-for i in range(n):
-    room.append(list(map(int, input().split())))
+for s, e in room:
+    if end:
+        if end[0] <= s:
+            heapq.heappop(end)
+    heapq.heappush(end, e)
 
-room.sort()
-count = []
-
-for i in range(n):
-    if i == 0:
-        count.append(room[i][1])
-        continue
-
-    chk = 1
-
-    for j in range(len(count)):
-        if room[i][0] >= count[j]:
-            chk = 0
-            count[j] = room[i][1]
-            break
-    
-    if chk == 1:
-        count.append(room[i][1])
-
-print(len(count))
+print(len(end))

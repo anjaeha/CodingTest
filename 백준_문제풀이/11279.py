@@ -4,14 +4,13 @@ input = sys.stdin.readline
 
 n = int(input())
 
-q = []
-for i in range(n):
-    x = int(input())
-
-    if x != 0:
-        heapq.heappush(q, (-x, x))
-    else:
-        if q == []:
+heap = []
+for _ in range(n):
+    temp = int(input())
+    if temp == 0:
+        if heap == []:
             print(0)
         else:
-            print(heapq.heappop(q)[1])
+            print(heapq.heappop(heap)[1])
+    else:
+        heapq.heappush(heap, (-temp, temp))
