@@ -1,29 +1,43 @@
-from collections import deque
 import sys
 input = sys.stdin.readline
+from collections import deque
 
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
 board = [list(map(str, input().strip())) for _ in range(12)]
 
+
 def bfs(x, y):
-    for i in range(4):
-        nx = x + dx[i]
-        ny = y + dy[i]
+    q = deque()
+    q.append((x, y))
+    visit = [[0] * 6 for _ in range(12)]
+    visit[x][y] = 1
+    boom = [[x, y]]
+    while q:
+        x, y = q.popleft()
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
 
-        if 0 <= nx < 12 and 0 <= ny < 6:
-            if board[x][y] == board[nx][ny] and visit[nx][ny] == 0:
-                visit[nx][ny] = 1
-                q.append((nx, ny))
+            if 0 <= nx < 12 and 0 <= ny < 6:
+                if board[x][y] == board[nx][ny] and visit[nx][ny] == 0:
+                    q.append((nx, ny))
+                    visit[nx][ny] = 1
+                    boom.append((nx, ny))
+    if len(boom) >= 4:
+        for a, b in boom:
+            board[a][b] = '.'
 
+    return len(boom)
 
-def fall():
+def fall():  #밑으로 내리기. 밑에서부터 저장하고 밑에서부터 순서대로 입력해줌. 어차피 밑에 다 깔림.
     for j in range(6):
         bag = deque()
         for i in range(11, -1, -1):
             if board[i][j] != '.':
                 bag.append(board[i][j])
+        
         for i in range(11, -1, -1):
             if bag:
                 board[i][j] = bag.popleft()
@@ -31,29 +45,25 @@ def fall():
                 board[i][j] = '.'
 
 
-
-chk = False
 answer = 0
+
 while 1:
-    visit = [[0] * 6 for _ in range(12)]
+    count = 0
+    # count 변수 만들어서 4개이상 터진적이 있는지 확인.
+    # 여러 그룹이 터지더라도 한번의 연쇄가 추가됨. 모았다가 answer 1회 증가.
     for i in range(12):
         for j in range(6):
-            if board[i][j] != '.' and visit[i][j] == 0:
-                visit[i][j] = 1
-                q = deque([[i, j]])
-                st = []
+            cnt = 0
+            if board[i][j] != '.':
+                cnt = bfs(i, j)
+                if cnt >= 4:
+                    count += cnt
 
-                while q:
-                    now = q.popleft()
-                    st.append(now)
-                    bfs(now[0], now[1])
-                if len(st) >= 4:
-                    chk = True
-                    for s in st:
-                        board[s[0]][s[1]] = '.'
-    fall()
-    if not chk:
+    if count == 0:
         break
-    chk = False
-    answer += 1
+    if count >= 4:
+        answer += 1
+    fall()
+
+            
 print(answer)

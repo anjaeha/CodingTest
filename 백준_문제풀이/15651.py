@@ -1,21 +1,17 @@
+import sys
+input = sys.stdin.readline
+
 n, m = map(int, input().split())
-
+num = [i for i in range(1, n+1)]
 arr = []
-num = [i+1 for i in range(n)]
-check = [False] * n
 
-def dfs(cnt):
-    if (cnt == m):
+def dfs(depth):
+    if depth == m:
         print(*arr)
         return
-
-    for i in range(n):
-        check[i] = True
+    
+    for i in range(n):      
         arr.append(num[i])
-        dfs(cnt+1)
+        dfs(depth + 1)
         arr.pop()
-
-        check[i] = False
-
-
 dfs(0)

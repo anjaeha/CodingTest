@@ -1,28 +1,26 @@
-n, m = map(int, input().split())
+import sys
+input = sys.stdin.readline
 
-num = []
-cheeck = [False] * n
+n, m = map(int, input().split())
+num = sorted(list(map(int, input().split())))
+used = [False] * n
 arr = []
 
-num.extend(map(int, input().split()))
-num.sort()
-
-def dfs(cnt):
-    if (cnt == m):
+def dfs(depth):
+    if depth == m:
         print(*arr)
         return
-    
+
     for i in range(n):
-        if (cheeck[i]):
+        if used[i]:
             continue
 
-        cheeck[i] = True
+        used[i] = True
         arr.append(num[i])
-        dfs(cnt+1)
+        dfs(depth + 1)
         arr.pop()
 
-        for j in range(i+1, n):
-            cheeck[j] = False
-        
+        for j in range(i + 1, n):
+            used[j] = False
 
 dfs(0)
