@@ -1,29 +1,27 @@
+import sys
+input = sys.stdin.readline
+
 n, m = map(int, input().split())
-
-num = []
+num = sorted(list(map(int, input().split())))
 arr = []
-check = [False] * n
-num.extend(map(int, input().split()))
-num.sort()
+used = [False] * n
 
-
-def bfs(cnt):
-    if (cnt == m):
+def dfs(depth):
+    if depth == m:
         print(*arr)
         return
 
     for i in range(n):
-        
-        if (check[i]):
+        if used[i]:
             continue
+
         
         arr.append(num[i])
-        
-        bfs(cnt+1)
-        check[i] = True
+        dfs(depth + 1)
+        used[i] = True
         arr.pop()
 
-        for j in range(i+1, n):
-            check[j] = False
+        for j in range(i + 1, n):
+            used[j] = False
 
-bfs(0)
+dfs(0)

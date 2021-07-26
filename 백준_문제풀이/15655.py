@@ -10,7 +10,7 @@ def dfs(depth):
     if depth == m:
         print(*arr)
         return
-
+    
     for i in range(n):
         if used[i]:
             continue
@@ -21,6 +21,6 @@ def dfs(depth):
         arr.pop()
 
         for j in range(i + 1, n):
-            used[j] = False
+            used[j] = False 
 
 dfs(0)

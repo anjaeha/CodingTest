@@ -1,28 +1,18 @@
-n, m = map(int, input().split())
-check = [False] * n
-num = list(map(int, input().split()))
-num.sort()
+import sys
+input = sys.stdin.readline
 
-answer = []
+n, m = map(int, input().split())
+num = sorted(list(set(map(int, input().split()))))
 arr = []
 
-def dfs(cnt):
-    if (cnt == m):
-        answer.append(tuple(arr))
+def dfs(depth):
+    if depth == m:
+        print(*arr)
         return
 
-    for i in range(n):
-
-
-        check[i] = True
+    for i in range(len(num)):
         arr.append(num[i])
-        dfs(cnt+1)
+        dfs(depth + 1)
         arr.pop()
 
-
-        check[i] = False
-
 dfs(0)
-
-for i in sorted(list(set(answer))):
-    print(*i)
