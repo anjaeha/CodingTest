@@ -1,33 +1,28 @@
 import sys
 input = sys.stdin.readline
 
+def prime_list(n):
+    s = [True] * n
+    m = int(n ** 0.5)
+    for i in range(2, m+1):
+        if s[i]:
+            for j in range(i * 2, n, i):
+                s[j] = False
+    return [i for i in range(2, n) if s[i] == True]
+
 n = int(input())
-prime = []
-array = [False, False] + [True] * (n-1)
+data = prime_list(n + 1)
+length = len(data)
+summary, end, result = 0, 0, 0
 
-for i in range(2, n+1):
-    if array[i]:
-        prime.append(i)
-    for j in range(i*2, n+1, i):
-        array[j] = False
-
-print(prime)
-
-start = 0
-end = 0
-cnt = 0
-interval_sum = 0
-
-while True:
-    if interval_sum >= n:
-        if interval_sum == n:
-            cnt += 1
-        interval_sum -= prime[start]
-        start += 1
-    elif end == len(prime):
-        break
-    else:
-        interval_sum += prime[end]
+for i in range(length):
+    while summary < n and end < length:
+        summary += data[end]
         end += 1
 
-print(cnt)
+    if summary == n:
+        result += 1
+    
+    summary -= data[i]
+
+print(result)
