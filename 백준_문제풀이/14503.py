@@ -40,3 +40,43 @@ while 1:
         else:
             print(count)
             break
+
+"""
+import sys
+input = sys.stdin.readline
+
+n, m = map(int, input().split())
+x, y, d = map(int, input().split())
+s = [list(map(int, input().split())) for _ in range(n)]
+
+dx = [-1, 0, 1, 0]
+dy = [0, 1, 0, -1]
+
+def clean(x, y, d):
+    global answer
+    
+    if s[x][y] == 0:
+        s[x][y] = 2
+        answer += 1
+
+    for _ in range(4):
+        d = (d - 1) % 4
+        nx = x + dx[d]
+        ny = y + dy[d]
+
+        if s[nx][ny] == 0:
+            clean(nx, ny, d)
+            return
+    
+    nd = (d - 2) % 4
+    nx = x + dx[nd]
+    ny = y + dy[nd]
+
+    if s[nx][ny] == 1:
+        return
+    clean(nx, ny, d)
+
+answer = 0
+clean(x, y, d)
+print(answer)
+"""
