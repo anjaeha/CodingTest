@@ -47,3 +47,46 @@ for i in range(k):
             graph[x][y] = 0
 
         print(dice[6])
+
+
+"""
+import sys
+input = sys.stdin.readline
+
+n, m, x, y, k = map(int, input().split())
+s = [list(map(int, input().split())) for _ in range(n)]
+order = list(map(int, input().split()))
+
+dx = [0, 0, 0, -1, 1]
+dy = [0, 1, -1, 0, 0]
+
+dice = [0, 0, 0, 0, 0, 0]
+def move(k):
+    if k == 1:
+        dice[0], dice[1], dice[2], dice[3], dice[4], dice[5] = dice[3], dice[1], dice[0], dice[5], dice[4], dice[2]
+    elif k == 2:
+        dice[0], dice[1], dice[2], dice[3], dice[4], dice[5] = dice[2], dice[1], dice[5], dice[0], dice[4], dice[3]
+    elif k == 3:
+        dice[0], dice[1], dice[2], dice[3], dice[4], dice[5] = dice[4], dice[0], dice[2], dice[3], dice[5], dice[1]
+    elif k == 4:
+        dice[0], dice[1], dice[2], dice[3], dice[4], dice[5] = dice[1], dice[5], dice[2], dice[3], dice[0], dice[4]
+
+for i in order:
+
+    nx = x + dx[i]
+    ny = y + dy[i]
+
+    if 0 <= nx < n and 0 <= ny < m:
+        move(i)
+        
+        if s[nx][ny] == 0:
+            s[nx][ny] = dice[5]
+        else:
+            dice[5] = s[nx][ny]
+            s[nx][ny] = 0
+
+        print(dice[0])
+
+        x, y = nx, ny
+
+"""

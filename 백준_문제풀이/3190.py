@@ -58,3 +58,66 @@ for _ in range(l):
     snake_dir.append((int(x), y))
 
 print(move())
+
+
+"""
+import sys
+from collections import deque
+input = sys.stdin.readline
+
+dx = [0, 1, 0, -1]
+dy = [1, 0, -1, 0]
+# 동, 남, 서, 북
+
+n = int(input())
+k = int(input())
+graph = [[0] * n for _ in range(n)]
+
+for i in range(k):
+    x, y = map(int, input().split())
+    graph[x - 1][y - 1] = 1
+
+l = int(input())
+s = []
+for i in range(l):
+    x, num = input().split()
+    s.append((int(x), num))
+
+def dummy(x, y, d):
+    q = deque()
+    q.append((x, y))
+    global count
+    idx = 0
+
+    while q:
+        if idx < len(s):
+            changeCnt, changeD = s[idx][0], s[idx][1]
+            if count == changeCnt:
+                if changeD == 'D':
+                    d = (d + 1) % 4
+                elif changeD == 'L':
+                    d = (d - 1) % 4
+                idx += 1
+
+        nx = x + dx[d]
+        ny = y + dy[d]
+        count += 1
+        if nx < 0 or ny < 0 or nx >= n or ny >= n:
+            return
+        
+        if graph[nx][ny] == 0:
+            q.append((nx, ny))
+            graph[nx][ny] = 2
+            delx, dely = q.popleft()
+            graph[delx][dely] = 0
+        elif graph[nx][ny] == 1:
+            q.append((nx, ny))
+            graph[nx][ny] = 2
+        elif graph[nx][ny] == 2:
+            return
+        x, y = nx, ny
+
+count = 0
+dummy(0, 0, 0)
+print(count)
+"""
