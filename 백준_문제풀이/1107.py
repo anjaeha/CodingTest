@@ -7,7 +7,6 @@ number = [True] * 10
 answer = abs(100 - int(''.join(n)))
 
 temp = list(map(int, input().split()))
-
 for i in range(m):
     number[temp[i]] = False
 

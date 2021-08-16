@@ -1,38 +1,36 @@
-l, c = map(int, input().split())
+import sys
+input = sys.stdin.readline
 
-arr = list(map(str, input().split()))
-arr.sort()
+n, m = map(int, input().split())
+word = list(input().split())
+word.sort()
 
-check = [False] * c
+visit = [False] * m
 
 answer = []
-t = []
 
 def dfs(cnt):
-    if (cnt == l):
-        za = 0
+    if cnt == n:
         mo = 0
-
-        for i in range(l):
+        za = 0
+        for i in range(n):
             if answer[i] in 'aeiou':
                 mo += 1
             else:
                 za += 1
-
-        if za >= 2 and mo >= 1:
+        if mo >= 1 and za >= 2:
             print(''.join(answer))
+        
 
-
-    for i in range(c):
-        if (check[i]):
+    for i in range(m):
+        if visit[i]:
             continue
-
-        check[i] = True
-        answer.append(arr[i])
-        dfs(cnt+1)
+        visit[i] = True
+        answer.append(word[i])
+        dfs(cnt + 1)
         answer.pop()
 
-        for j in range(i+1, c):
-            check[j] = False
+        for j in range(i+1, m):
+            visit[j] = False
 
 dfs(0)

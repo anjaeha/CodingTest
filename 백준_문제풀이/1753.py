@@ -1,35 +1,40 @@
+import heapq
 import sys
 input = sys.stdin.readline
-from heapq import heappush, heappop
+INF = sys.maxsize
 
-inf = 10000000
-v, e = map(int, input().split())
+n, m = map(int, input().split())
 start = int(input())
-s = [[] for _ in range(v+1)]
 
-visit = [inf] * (v+1)
+graph = [[] for i in range(n+1)]
+distance = [INF] * (n+1)
 
-for _ in range(e):
+for _ in range(m):
     a, b, c = map(int, input().split())
-    s[a].append([b, c])
+    graph[a].append((b, c))
 
-q = []
-def dij(start):
-    visit[start] = 0
-    heappush(q, [0, start])
-    
+def dijkstra(start):
+    q = []
+
+    heapq.heappush(q, (0, start))
+    distance[start] = 0
     while q:
-        w, n = heappop(q)
-        for n_n, wei in s[n]:
-            n_w = wei + w
-            if n_w < visit[n_n]:
-                visit[n_n] = n_w
-                heappush(q, [n_w, n_n])
+        dist, now = heapq.heappop(q)
 
-dij(start)
+        if distance[now] < dist:
+            continue
 
-for i in range(1, v+1):
-    if visit[i] != inf:
-        print(visit[i])
+        for i in graph[now]:
+            cost = dist + i[1]
+
+            if cost < distance[i[0]]:
+                distance[i[0]] = cost
+                heapq.heappush(q, (cost, i[0]))
+
+dijkstra(start)
+
+for i in range(1, n+1):
+    if distance[i] == INF:
+        print("INF")
     else:
-        print('INF')
+        print(distance[i])
