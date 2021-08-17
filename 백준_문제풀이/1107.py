@@ -1,21 +1,22 @@
 import sys
 input = sys.stdin.readline
 
-n = list(input().strip())
+n = int(input())
 m = int(input())
-number = [True] * 10
-answer = abs(100 - int(''.join(n)))
+disable_number = list(map(int, input().split()))
+able_number = set([i for i in range(0, 10)])
 
-temp = list(map(int, input().split()))
 for i in range(m):
-    number[temp[i]] = False
+    able_number.remove(disable_number[i])
+
+min_count = abs(100 - n)
 
 for num in range(1000001):
     num = str(num)
-    for j in range(len(num)):
-        if not number[int(num[j])]:
+    for i in num:
+        if int(i) in disable_number:
             break
-        elif j == len(num) - 1:
-            answer = min(answer, abs(int(''.join(n))-int(num)) + len(str(num)))
+    else:
+        min_count = min(min_count, len(num) + abs(int(num) - n))
 
-print(answer)
+print(min_count)

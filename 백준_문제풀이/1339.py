@@ -2,20 +2,23 @@ import sys
 input = sys.stdin.readline
 
 n = int(input())
-arr = [list(map(str, input().strip())) for _ in range(n)]
-a = [0 for i in range(26)]
 
-cnt = 9
-for k in arr:
-    idx = len(k)
-    for i in range(len(k)):
-        a[ord(k[i]) - 65] += 10 ** (idx - i - 1)
-    
+word = [input().strip() for _ in range(n)]
+a = [0 for _ in range(26)]
+
+number = 9
+
+for w in word:
+    length = len(w)
+    for i in range(length):
+        temp = ord(w[i]) - 65
+        a[temp] += 10 ** (length - i - 1)
+            
 a.sort(reverse=True)
 
-answer = 0
-for i in a:
-    answer += cnt * i
-    cnt -= 1
+result = 0
+for i in range(26):
+    result += a[i] * number
+    number -= 1
 
-print(answer)
+print(result)
