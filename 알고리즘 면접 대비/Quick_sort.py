@@ -45,3 +45,28 @@ def quick_sort(arr, start, end):
 
 quick_sort(arr, 0, len(arr) - 1)
 print(arr)
+
+
+arr = [5, 7, 9, 0, 3, 1, 6, 2, 4, 8]
+
+def quick_sort1(list):
+    if len(list) <= 1:
+        return list
+    pivot = list[len(list) // 2]
+    less_arr, equal_arr, big_arr = [], [], []
+    for i in list:
+        if i < pivot:
+            less_arr.append(i)
+        elif i == pivot:
+            equal_arr.append(i)
+        else:
+            big_arr.append(i)
+
+    return quick_sort(less_arr) + equal_arr + quick_sort(big_arr)
+
+arr = quick_sort1(arr)
+print(arr)
+
+"""
+quick_sort1 처럼 하면 간단하긴하지만, 메모리를 사용함
+"""
