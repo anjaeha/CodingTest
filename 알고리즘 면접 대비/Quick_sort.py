@@ -70,3 +70,27 @@ print(arr)
 """
 quick_sort1 처럼 하면 간단하긴하지만, 메모리를 사용함
 """
+
+
+def quick_sort2(arr, start, end):
+    if start >= end:
+        return
+
+    pivot = (start + end) // 2
+    left = start
+    right = end
+
+    while left <= right:
+        if arr[left] < arr[pivot]:
+            left += 1
+        if arr[pivot] < arr[right]:
+            right -= 1
+        if left <= right:
+            arr[left], arr[right] = arr[right], arr[left]
+            left += 1
+            right -= 1
+
+    quick_sort2(arr, left, end)
+    quick_sort2(arr, start, right)
+
+quick_sort2(arr, 0, len(arr) - 1)
