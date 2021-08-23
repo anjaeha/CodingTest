@@ -1,20 +1,19 @@
 import sys
 input = sys.stdin.readline
 
-s1 = list(input().strip())
-s2 = list(input().strip())
+A = input().strip()
+B = input().strip()
 
-s1_len = len(s1)
-s2_len = len(s2)
+lenA = len(A)
+lenB = len(B)
 
-dp = [[0] * (s2_len + 1) for i in range(s1_len + 1)]
-s = []
-for i in range(s1_len):
-    for j in range(s2_len):
-        if s1[i] == s2[j]:
-            dp[i+1][j+1] = dp[i][j] + 1
+graph = [[0] * (lenB + 1) for _ in range(lenA + 1)]
 
+for i in range(1, lenA+1):
+    for j in range(1, lenB+1):
+        if A[i-1] == B[j-1]:
+            graph[i][j] = graph[i-1][j-1] + 1
         else:
-            dp[i+1][j+1] = max(dp[i+1][j], dp[i][j+1])
+            graph[i][j] = max(graph[i-1][j], graph[i][j-1])
 
-print(dp[s1_len][s2_len])
+print(graph[-1][-1])
