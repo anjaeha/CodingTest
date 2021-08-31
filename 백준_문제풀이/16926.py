@@ -1,40 +1,36 @@
-import sys
-input = sys.stdin.readline
+n, m, r = map(int, input().split())
 
-N, M, R = map(int, input().split())
+graph = [list(map(int, input().split())) for _ in range(n)]
 
-s = []
-for i in range(N):
-    s.append(list(map(int, input().split())))
+for _ in range(r):
+    for i in range(min(n, m) // 2):
+        s_x, s_y = i, i
+        s_value = graph[s_x][s_y]
 
-for rr in range(R):
-    x, y = 0, 0
-    n, m = N, M
+        for j in range(i + 1, n - i):
+            s_x = j
+            temp = graph[s_x][s_y]
+            graph[s_x][s_y] = s_value
+            s_value = temp
 
-    for case in range(min(N, M) // 2):
-        
-        tmp = s[x][y]
-
-        for i in range(m-1): #위
-            s[x][y+i] = s[x][y+i+1]
-
-        for i in range(n-1): #오른쪽
-            s[x+i][y+m-1] = s[x+i+1][y+m-1]
-
-        for i in range(m-1): #아래
-            s[x+n-1][y+m-1-i] = s[x+n-1][y+m-2-i]
-
-        for i in range(n-1): #왼쪽
-            s[x+n-i-1][y] = s[x+n-i-2][y]
-
-        s[x+1][y] = tmp
-
-        n -= 2
-        m -= 2
-        
-        x += 1
-        y += 1
+        for j in range(i + 1, m - i):
+            s_y = j
+            temp = graph[s_x][s_y]
+            graph[s_x][s_y] = s_value
+            s_value = temp
 
 
-for i in s:
+        for j in range(n - i - 2, i - 1, -1):
+            s_x = j
+            temp = graph[s_x][s_y]
+            graph[s_x][s_y] = s_value
+            s_value = temp
+
+        for j in range(m - i - 2, i - 1, -1):
+            s_y = j
+            temp = graph[s_x][s_y]
+            graph[s_x][s_y] = s_value
+            s_value = temp
+
+for i in graph:
     print(*i)
