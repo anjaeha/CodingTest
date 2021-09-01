@@ -83,3 +83,89 @@ for i in range(len(array)):
     graph = graph_temp
 
 print(min_val)
+
+
+"""
+dfs안에서 temp를 만들어서 만들면서 k가 되면 rotate를 해서 최소값을 찾는 방법
+시간은 위에꺼에 2배 정도 걸림.
+from copy import deepcopy
+
+def rotate(x, y, r):
+    for i in range(r):
+        min_x = x - r + i
+        max_x = x + r - i
+        min_y = y - r + i
+        max_y = y + r - i
+        
+        s_x, s_y = x - r + i, y - r + i
+
+        val = graph[min_x][min_y]
+
+        for ny in range(min_y + 1, max_y + 1):
+            temp = graph[s_x][ny]
+            graph[s_x][ny] = val
+            val = temp
+            s_y = ny
+        
+        for nx in range(min_x + 1, max_x + 1):
+            temp = graph[nx][s_y]
+            graph[nx][s_y] = val
+            val = temp
+            s_x = nx
+
+        for ny in range(max_y - 1, min_y - 1, -1):
+            temp = graph[s_x][ny]
+            graph[s_x][ny] = val
+            val = temp
+            s_y = ny
+
+        for nx in range(max_x - 1, min_x - 1, -1):
+            temp = graph[nx][s_y]
+            graph[nx][s_y] = val
+            val = temp
+            s_x = nx
+
+def find_min(min_val):
+    for i in range(n):
+        temp = sum(graph[i])
+        min_val = min(temp, min_val)
+    return min_val
+            
+n, m, k = map(int, input().split())
+graph = [list(map(int, input().split())) for _ in range(n)]
+cal = []
+for i in range(k):
+    a, b, c = map(int, input().split())
+    cal.append([a - 1, b - 1, c])
+
+number = [i for i in range(k)]
+array = []
+visit = [False] * k
+temp = []
+
+
+def dfs(cnt):
+    global array, min_val, graph
+    if cnt == k:
+        for i in temp:
+            a, b, c = cal[i]
+            rotate(a, b, c)
+        min_val = find_min(min_val)
+        return
+    
+    for i in range(k):
+        if visit[i]:
+            continue
+        graph_copy = deepcopy(graph)
+        visit[i] = True
+        temp.append(i)
+        dfs(cnt + 1)
+        temp.pop()
+        visit[i] = False
+        graph = graph_copy
+
+
+min_val = 50000
+dfs(0)
+print(min_val)
+"""
