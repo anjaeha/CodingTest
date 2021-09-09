@@ -1,59 +1,60 @@
 from copy import deepcopy
 
-n, m, k = map(int, input().split())
-board = [[[] for _ in range(n)] for _ in range(n)]
-
-for _ in range(m):
-    r, c, m, s, d = map(int, input().split())
-
-    if m != 0:
-        board[r - 1][c - 1].append([m, s, d])
-
 dx = [-1, -1, 0, 1, 1, 1, 0, -1]
 dy = [0, 1, 1, 1, 0, -1, -1, -1]
 
-for _ in range(k):
-    n_board = [[[] for _ in range(n)] for _ in range(n)]
+n, m, k = map(int, input().split())
 
+graph = [[[] for _ in range(n)] for _ in range(n)]
+
+for _ in range(m):
+    r, c, w, s, d = map(int, input().split())
+    if w:
+        graph[r - 1][c - 1].append((w, s, d))
+
+for case in range(k):
+    graph_copy = [[[] for _ in range(n)] for _ in range(n)]
     for x in range(n):
         for y in range(n):
-            if board[x][y] != []:
-                for k in range(len(board[x][y])):
-                    nn, ss, dd = board[x][y][k]
-                    nx = x + dx[dd] * ss
-                    ny = y + dy[dd] * ss
+            if graph[x][y]:
+                for k in range(len(graph[x][y])):
+                    w, s, d = graph[x][y][k]
+                    nx, ny = x + dx[d] * s, y + dy[d] * s
                     nx = (nx + n) % n
                     ny = (ny + n) % n
-                    n_board[nx][ny].append((nn, ss, dd))
+                    graph_copy[nx][ny].append((w, s, d))
 
+
+                
     for x in range(n):
         for y in range(n):
-            if len(n_board[x][y]) >= 2:
-                mm, ss, dd = 0, 0, []
-                cnt = len(n_board[x][y])
-                for c in range(cnt):
-                    mm += n_board[x][y][c][0]
-                    ss += n_board[x][y][c][1]
-                    dd.append(n_board[x][y][c][2] % 2)
-                mm //= 5
-                ss //= cnt
-                n_board[x][y] = []
-                if mm != 0:
-                    if sum(dd) == 0 or sum(dd) == cnt:
+            if len(graph_copy[x][y]) >= 2:
+                w, s, d = 0, 0, 0
+                idx = len(graph_copy[x][y])
+                for k in range(idx):
+                    tmp_w, tmp_s, tmp_d = graph_copy[x][y][k]
+                    w += tmp_w
+                    s += tmp_s
+                    d += tmp_d % 2
+                w = w // 5
+                s = s // len(graph_copy[x][y])
+                graph_copy[x][y] = []
+                if w:
+                    if d == 0 or d == idx:
                         for i in range(4):
-                            n_board[x][y].append((mm, ss, i * 2))
+                            graph_copy[x][y].append((w, s, i * 2))
                     else:
                         for i in range(4):
-                            n_board[x][y].append((mm, ss, i * 2 + 1))
+                            graph_copy[x][y].append((w, s, i * 2 + 1))
 
-    board = deepcopy(n_board)
+    graph = deepcopy(graph_copy)
 
 
 result = 0
 for x in range(n):
     for y in range(n):
-        if board[x][y] != []:
-            for k in range(len(board[x][y])):
-                result += board[x][y][k][0]
+        if graph[x][y]:
+            for k in range(len(graph[x][y])):
+                result += graph[x][y][k][0]
 
 print(result)
