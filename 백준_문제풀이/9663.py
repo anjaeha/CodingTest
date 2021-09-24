@@ -1,25 +1,22 @@
-import sys
-input = sys.stdin.readline
-
+# N * N 체스판에 N개의 퀸을 놓을 수 있는 방법의 수
+# 퀸은 위아래, 대각선으로 움직일 수 있다. 
 n = int(input())
+str_row = [0] * n # 직선상의 개수
+right_row  = [0] * (2 * n - 1) # 오른쪽 대각선의 개수
+left_row = [0] * (2 * n - 1) # 왼쪽 대각선의 개수
 
-a, b, c = [False] * n, [False] * (2*n-1), [False] * (2*n-1)
-# 직선, / 대각선, \ 대각선
 
-cnt = 0
-def solve(i):
-    global cnt
-    if i == n: # 행 끝까지..
-        cnt += 1
+result = 0
+def queen(idx):
+    global result
+    if idx == n:
+        result += 1
         return
+    for i in range(n):
+        if str_row[i] + left_row[idx + i] + right_row[idx - i] == 0:
+            str_row[i] = left_row[idx + i] = right_row[idx - i] = 1
+            queen(idx + 1)
+            str_row[i] = left_row[idx + i] = right_row[idx - i] = 0
 
-    for j in range(n): # 열 이동
-        if (a[j] or b[i+j] or c[i-j+n-1]) == False:
-            a[j] = b[i+j] = c[i-j+n-1] = True
-            solve(i+1)
-            a[j] = b[i+j] = c[i-j+n-1] = False
-
-
-
-solve(0)
-print(cnt)
+queen(0)
+print(result)
