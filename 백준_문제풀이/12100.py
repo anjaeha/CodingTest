@@ -1,113 +1,127 @@
-import sys, copy
-input = sys.stdin.readline
+from collections import deque
+from copy import deepcopy
 
+def move(dir):
+    # 위로
+    if dir == 0:
+        q = deque()
+        for i in range(n):
+            for j in range(n):
+                if graph[j][i]:
+                    q.append(graph[j][i])
+                    graph[j][i] = 0
+            answer = []
+            while q:
+                temp = q.popleft()
+                if q:
+                    if temp == q[0]:
+                        answer.append(temp * 2)
+                        q.popleft()
+                    else:
+                        answer.append(temp)
+                else:
+                    answer.append(temp)
+            for j in range(n):
+                if answer:
+                    graph[j][i] = answer.pop(0)
+                else:
+                    graph[j][i] = 0
+
+    # 아래로             
+    elif dir == 1:
+        q = deque()
+        for i in range(n):
+            for j in range(n - 1, -1, -1):
+                if graph[j][i]:
+                    q.append(graph[j][i])
+                    graph[j][i] = 0
+            answer = []
+            while q:
+                temp = q.popleft()
+                if q:
+                    if temp == q[0]:
+                        answer.append(temp * 2)
+                        q.popleft()
+                    else:
+                        answer.append(temp)
+                else:
+                    answer.append(temp)
+            for j in range(n - 1, -1, -1):
+                if answer:
+                    graph[j][i] = answer.pop(0)
+                else:
+                    graph[j][i] = 0
+    # 왼쪽으로
+    elif dir == 2:
+        q = deque()
+        for i in range(n):
+            for j in range(n):
+                if graph[i][j]:
+                    q.append(graph[i][j])
+                    graph[i][j] = 0
+            answer = []
+            while q:
+                temp = q.popleft()
+                if q:
+                    if temp == q[0]:
+                        answer.append(temp * 2)
+                        q.popleft()
+                    else:
+                        answer.append(temp)
+                else:
+                    answer.append(temp)
+            for j in range(n):
+                if answer:
+                    graph[i][j] = answer.pop(0)
+                else:
+                    graph[i][j] = 0
+
+    # 오른쪽으로
+    elif dir == 3:
+        q = deque()
+        for i in range(n):
+            for j in range(n - 1, -1, -1):
+                if graph[i][j]:
+                    q.append(graph[i][j])
+                    graph[i][j] = 0
+            answer = []
+            while q:
+                temp = q.popleft()
+                if q:
+                    if temp == q[0]:
+                        answer.append(temp * 2)
+                        q.popleft()
+                    else:
+                        answer.append(temp)
+                else:
+                    answer.append(temp)
+            for j in range(n - 1, -1, -1):
+                if answer:
+                    graph[i][j] = answer.pop(0)
+                else:
+                    graph[i][j] = 0
+
+
+# 최대 5번 이동시켜서 얻을 수 있는 가장 큰 블록
 n = int(input())
-arr = [list(map(int, input().split())) for _ in range(n)]
-result = 0
-
-def move(idx):
-    if idx == 0:
-        for i in range(n):
-            q = []
-            for j in range(n):
-                if arr[i][j]:
-                    q.append(arr[i][j])
-                    arr[i][j] = 0
-            answer = []
-            while q:
-                temp = q.pop(0)
-                if q:
-                    if temp == q[0]:
-                        answer.append(temp * 2)
-                        q.pop(0)
-                    else:
-                        answer.append(temp)
-                else:
-                    answer.append(temp)
-            for j in range(n):
-                if answer:
-                    arr[i][j] = answer.pop(0)
-                
-    elif idx == 1:
-        for i in range(n):
-            q = []
-            for j in range(n-1, -1, -1):
-                if arr[i][j]:
-                    q.append(arr[i][j])
-                    arr[i][j] = 0
-            answer = []
-            while q:
-                temp = q.pop(0)
-                if q:
-                    if temp == q[0]:
-                        answer.append(temp * 2)
-                        q.pop(0)
-                    else:
-                        answer.append(temp)
-                else:
-                    answer.append(temp)
-            for j in range(n-1, -1, -1):
-                if answer:
-                    arr[i][j] = answer.pop(0)
-                    
-    elif idx == 2:
-        for i in range(n):
-            q = []
-            for j in range(n):
-                if arr[j][i]:
-                    q.append(arr[j][i])
-                    arr[j][i] = 0
-            answer = []
-            while q:
-                temp = q.pop(0)
-                if q:
-                    if temp == q[0]:
-                        answer.append(temp * 2)
-                        q.pop(0)
-                    else:
-                        answer.append(temp)
-                else:
-                    answer.append(temp)
-            for j in range(n):
-                if answer:
-                    arr[j][i] = answer.pop(0)
-
-    elif idx == 3:
-        for i in range(n):
-            q = []
-            for j in range(n-1, -1, -1):
-                if arr[j][i]:
-                    q.append(arr[j][i])
-                    arr[j][i] = 0
-            answer = []
-            while q:
-                temp = q.pop(0)
-                if q:
-                    if temp == q[0]:
-                        answer.append(temp * 2)
-                        q.pop(0)
-                    else:
-                        answer.append(temp)
-                else:
-                    answer.append(temp)
-            for j in range(n-1, -1, -1):
-                if answer:
-                    arr[j][i] = answer.pop(0)
+graph = [list(map(int, input().split())) for _ in range(n)]
 
 
-def dfs(cnt):
-    global result, arr
-    if cnt == 5:
+result = -1
+def dfs(depth):
+    global result, graph
+    if depth == 5:
         for i in range(n):
-            result = max(result, max(arr[i]))
+            for j in range(n):
+                if graph[i][j] > result:
+                    result = graph[i][j]
         return
-    
-    tmp = copy.deepcopy(arr)
 
+    temp = deepcopy(graph)
     for i in range(4):
         move(i)
-        dfs(cnt + 1)
-        arr = copy.deepcopy(tmp)
+        dfs(depth + 1)
+        graph = deepcopy(temp)
 
 dfs(0)
 print(result)
