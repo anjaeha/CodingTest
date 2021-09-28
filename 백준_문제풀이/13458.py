@@ -1,19 +1,16 @@
-import sys
-input = sys.stdin.readline
+from math import ceil
+n = int(input()) # 시험장의 수
+a = list(map(int, input().split())) # 시험장에 있는 응시자의 수
+b, c = map(int, input().split()) # 총감독관, 부감독관 감시 가능 수
 
-n = int(input())
-a = list(map(int, input().split()))
-b, c = map(int, input().split())
+result = 0
 
-cnt = 0
-for i in a:
-    cnt += 1
-    temp = i - b
-    
-    if temp > 0:
-        if temp % c == 0:
-            cnt += temp // c
-        else:
-            cnt += temp // c + 1
+for case in range(n):
+    result += 1
+    temp = a[case] - b
+    if temp <= 0:
+        continue
+    else:
+        result += ceil(temp / c)
 
-print(cnt)
+print(result)

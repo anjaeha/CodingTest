@@ -1,92 +1,42 @@
-import sys
-input = sys.stdin.readline
-
-"""
-동          서            남             북
-1 -> 3      1 -> 4        1 -> 5           1 -> 2
-2 -> 2      2 -> 2        2 -> 1           2 -> 6
-3 -> 6      3 -> 1        3 -> 3           3 -> 3
-4 -> 1      4 -> 6        4 -> 4           4 -> 4
-5 -> 5      5 -> 5        5 -> 6           5 -> 1
-6 -> 4      6 -> 3        6 -> 2           6 -> 5
-1은 바닥, 2는 뒤, 3은 오른쪽, 4는 왼쪽, 5는 앞, 6은 위를 바라보는 주사위가 만들어지고,
-동, 서, 남, 북으로 주사위가 회전하며 다음 오는 위치를 표시해줌.
-"""
-
-def move(n, arr):
-    if n == 1: # 동
-        return [0, arr[3], arr[2], arr[6], arr[1], arr[5], arr[4]]
-    elif n == 2: # 서
-        return [0, arr[4], arr[2], arr[1], arr[6], arr[5], arr[3]]
-    elif n == 3: # 남
-        return [0, arr[5], arr[1], arr[3], arr[4], arr[6], arr[2]]
-    elif n == 4: # 북
-        return [0, arr[2], arr[6], arr[3], arr[4], arr[1], arr[5]]
 
 
 n, m, x, y, k = map(int, input().split())
 graph = [list(map(int, input().split())) for _ in range(n)]
-order = list(map(int, input().split()))
-
-dice = [0] * 7
+direction = list(map(int, input().split()))
 
 dx = [0, 0, 0, -1, 1]
 dy = [0, 1, -1, 0, 0]
+# 가만히, 동, 서, 북, 남
 
-for i in range(k):
-    if 0 <= x + dx[order[i]] < n and 0 <= y + dy[order[i]] < m:
-        x = x + dx[order[i]]
-        y = y + dy[order[i]]
+dice = [0, 0, 0, 0, 0, 0, 0]
+# 위, 뒤, 오른, 왼, 앞, 아래
 
-        dice = move(order[i], dice)
+def move(d):
+    global dice
+    if d == 1: # 동쪽으로 굴리면
+        dice[1], dice[3], dice[4], dice[6] = dice[4], dice[1], dice[6], dice[3]
+    elif d == 2: # 서쪽으로 굴리면
+        dice[1], dice[3], dice[4], dice[6] = dice[3], dice[6], dice[1], dice[4]
+    elif d == 3: # 북쪽으로 굴리면
+        dice[1], dice[2], dice[5], dice[6] = dice[5], dice[1], dice[6], dice[2]
+    elif d == 4: # 남쪽으로 굴리면
+        dice[1], dice[2], dice[5], dice[6] = dice[2], dice[6], dice[1], dice[5]
 
-        if graph[x][y] == 0:
-            graph[x][y] = dice[1]
-        else:
-            dice[1] = graph[x][y]
-            graph[x][y] = 0
 
-        print(dice[6])
-
-
-"""
-import sys
-input = sys.stdin.readline
-
-n, m, x, y, k = map(int, input().split())
-s = [list(map(int, input().split())) for _ in range(n)]
-order = list(map(int, input().split()))
-
-dx = [0, 0, 0, -1, 1]
-dy = [0, 1, -1, 0, 0]
-
-dice = [0, 0, 0, 0, 0, 0]
-def move(k):
-    if k == 1:
-        dice[0], dice[1], dice[2], dice[3], dice[4], dice[5] = dice[3], dice[1], dice[0], dice[5], dice[4], dice[2]
-    elif k == 2:
-        dice[0], dice[1], dice[2], dice[3], dice[4], dice[5] = dice[2], dice[1], dice[5], dice[0], dice[4], dice[3]
-    elif k == 3:
-        dice[0], dice[1], dice[2], dice[3], dice[4], dice[5] = dice[4], dice[0], dice[2], dice[3], dice[5], dice[1]
-    elif k == 4:
-        dice[0], dice[1], dice[2], dice[3], dice[4], dice[5] = dice[1], dice[5], dice[2], dice[3], dice[0], dice[4]
-
-for i in order:
-
-    nx = x + dx[i]
-    ny = y + dy[i]
+for case in range(k):
+    dir = direction[case]
+    nx = x + dx[dir]
+    ny = y + dy[dir]
 
     if 0 <= nx < n and 0 <= ny < m:
-        move(i)
-        
-        if s[nx][ny] == 0:
-            s[nx][ny] = dice[5]
+        move(dir)
+        if graph[nx][ny] == 0:
+            graph[nx][ny] = dice[6]
         else:
-            dice[5] = s[nx][ny]
-            s[nx][ny] = 0
-
-        print(dice[0])
-
-        x, y = nx, ny
-
-"""
+            dice[6] = graph[nx][ny]
+            graph[nx][ny] = 0
+    else:
+        continue
+    
+    x, y = nx, ny
+    print(dice[1])

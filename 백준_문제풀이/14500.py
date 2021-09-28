@@ -41,48 +41,56 @@ print(result)
 
 """
 n, m = map(int, input().split())
-array = [list(map(int, input().split())) for _ in range(n)]
+
+graph = [list(map(int, input().split())) for _ in range(n)]
 visit = [[False] * m for _ in range(n)]
 
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
-
-def dfs(k, temp, x, y):
-    global result
-
-    if k == 4:
-        result = max(result, temp)
+def dfs(x, y, depth):
+    global MAX, temp, max_val
+    if depth == 4:
+        if MAX < temp:
+            MAX = temp
         return
 
-    if (4 - k) * max_val + temp < result:
+    if temp + max_val * (4 - depth) < MAX: # 현재 temp에 주어진 종이 위에 있는 최대값을 다 더해도 MAX보다 작다면 중간에 종료한다.
         return
-
-
+    
     for i in range(4):
         nx = x + dx[i]
         ny = y + dy[i]
 
         if 0 <= nx < n and 0 <= ny < m:
             if not visit[nx][ny]:
+                if depth == 2:
+                    visit[nx][ny] = True
+                    temp += graph[nx][ny]
+                    dfs(x, y, depth + 1)
+                    temp -= graph[nx][ny]
+                    visit[nx][ny] = False
+                    
+                temp += graph[nx][ny]
                 visit[nx][ny] = True
-                if k == 2:
-                    dfs(k + 1, temp + array[nx][ny], x, y)
-                dfs(k + 1, temp + array[nx][ny], nx, ny)
+                dfs(nx, ny, depth + 1)
+                temp -= graph[nx][ny]
                 visit[nx][ny] = False
-    return
 
 max_val = -1
 for i in range(n):
     for j in range(m):
-        max_val = max(max_val, array[i][j])
+        if max_val < graph[i][j]:
+            max_val = graph[i][j]
 
-result = 0
+MAX = -1
 for i in range(n):
     for j in range(m):
         visit[i][j] = True
-        dfs(1, array[i][j], i, j)
+        temp = graph[i][j]
+        dfs(i, j, 1)
         visit[i][j] = False
 
-print(result)
+
+print(MAX)
 """
