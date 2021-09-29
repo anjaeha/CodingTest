@@ -1,82 +1,41 @@
-import sys
-input = sys.stdin.readline
 n, m = map(int, input().split())
-
-x, y, d = map(int, input().split())
-s = [list(map(int, input().split())) for _ in range(n)]
+r, c, d = map(int, input().split())
+graph = [list(map(int, input().split())) for _ in range(n)]
 
 dx = [-1, 0, 1, 0]
 dy = [0, 1, 0, -1]
+# 북, 동, 남, 서
 
-s[x][y] = 2
-count = 1
+def robot_move(x, y, dir):
+    if graph[x][y] == 0: # 0이면 청소
+        graph[x][y] = 2
 
-while 1:
-    check = False
-
-    for i in range(4):
-        d = (d - 1) % 4
-        nx = x + dx[d]
-        ny = y + dy[d]
-
-        if 0 <= nx < n and 0 <= ny < m:
-            if s[nx][ny] == 0:
-                s[nx][ny] = 2
-                x, y = nx, ny
-                count += 1
-                check = True
-                break
-                
-    if not check:
-        nx = x - dx[d]
-        ny = y - dy[d]
+    for i in range(4): # 4방향을 돌며 (왼쪽 방향)
+        dir = (dir - 1) % 4
+        nx = x + dx[dir]
+        ny = y + dy[dir]
 
         if 0 <= nx < n and 0 <= ny < m:
-            if s[nx][ny] == 2:
-                x, y = nx, ny
-            elif s[nx][ny] == 1:
-                print(count)
-                break
-        else:
-            print(count)
-            break
+            if graph[nx][ny] == 0: # 0이면 다시 청소 시작
+                robot_move(nx, ny, dir)
+                return
 
-"""
-import sys
-input = sys.stdin.readline
-
-n, m = map(int, input().split())
-x, y, d = map(int, input().split())
-s = [list(map(int, input().split())) for _ in range(n)]
-
-dx = [-1, 0, 1, 0]
-dy = [0, 1, 0, -1]
-
-def clean(x, y, d):
-    global answer
+	# 4방향 모두 청소하지 못했으면 한칸 뒤로 물러남.
+    nx = x - dx[dir]
+    ny = y - dy[dir]
     
-    if s[x][y] == 0:
-        s[x][y] = 2
-        answer += 1
-
-    for _ in range(4):
-        d = (d - 1) % 4
-        nx = x + dx[d]
-        ny = y + dy[d]
-
-        if s[nx][ny] == 0:
-            clean(nx, ny, d)
-            return
-    
-    nd = (d - 2) % 4
-    nx = x + dx[nd]
-    ny = y + dy[nd]
-
-    if s[nx][ny] == 1:
+	# 물러났는데 벽이면 종료
+    if graph[nx][ny] == 1:
         return
-    clean(nx, ny, d)
+        
+    robot_move(nx, ny, dir)
 
-answer = 0
-clean(x, y, d)
-print(answer)
-"""
+robot_move(r, c, d)
+# 청소한 칸의 개수 구하기
+result = 0
+for i in range(n):
+    for j in range(m):
+        if graph[i][j] == 2:
+            result += 1
+
+print(result)
