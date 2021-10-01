@@ -1,73 +1,46 @@
-import sys
-input = sys.stdin.readline
+n, m, h = map(int, input().split()) # 세로선의 개수, 가로선의 개수, 가로선을 놓을 수 있는 위치의 개수
 
-n, m, h = map(int, input().split())
-line = [list(map(int, input().split())) for _ in range(m)]
+graph = [[False] * n for _ in range(h)]
 
-dx = [0, 0]
-dy = [-1, 1]
-# 왼쪽, 오른쪽
+for i in range(m):
+    a, b = map(int, input().split())
+    graph[a - 1][b - 1] = True
 
-result = 0
-
-graph = [[0] * n for _ in range(h)]
-
-for x, y in line:
-    graph[x-1][y-1] = 1
-
-# 사다리타고 내려오기
-def move(number):
-    x, y = 0, number
-    while 1:
-        if graph[x][y] == 1:
-            for i in range(2):
-                nx = x + dx[i]
-                ny = y + dy[i]
-
-                if 0 <= nx < n and 0 <= ny < n:
-                    if graph[nx][ny] == 1:
-                        x, y = nx + 1, ny
-        else:
-            x += 1
-
-        if x >= h:
-            break
-    return y
-
+# 사다리게임의 조건을 만족하는지
 def check():
-    for start in range(n):
-        k = start
+    for idx in range(n):
+        k = idx
         for i in range(h):
             if graph[i][k]:
                 k += 1
-            elif k > 0 and graph[i][k-1]:
+            elif k > 0 and graph[i][k - 1]:
                 k -= 1
-        if start != k:
+        if idx != k:
             return False
     return True
-
-result = 4
-
-def dfs(cnt, x, y):
+        
+# 모든 지역에서 사다리 추가해보기
+def dfs(depth, x, y):
     global result
     if check():
-        result = min(result, cnt)
+        result = min(result, depth)
         return
-    elif cnt >= 3:
+    
+    if depth == 3 or result <= depth:
         return
     
     for i in range(x, h):
-        if i == x:
+        if i == x:  # i가 x와 같으면 (x, y)부터 시작하여 사다리를 그어주고
             k = y
-        else:
+        else: # 아니라면 (x, 0)부터 사다리를 그어주는 방식이다.
             k = 0
+        
         for j in range(k, n - 1):
-            if graph[i][j] == 0 and graph[i][j+1] == 0:
-                graph[i][j] = 1
-                dfs(cnt + 1, i, j + 2)
-                graph[i][j] = 0
-            
+            if not graph[i][j] and not graph[i][j + 1]:
+                graph[i][j] = True
+                dfs(depth + 1, i, j + 2)
+                graph[i][j] = False
 
-
+result = 4
 dfs(0, 0, 0)
-print(result if result < 4 else - 1)
+print(result if result != 4 else -1)
