@@ -69,3 +69,60 @@ for i in range(n):
                 result += 1
 
 print(result)
+
+
+"""
+dx = [-1, -1, 0, 1, 1, 1, 0, -1]
+dy = [0, 1, 1, 1, 0, -1, -1, -1]
+
+
+n, m, k = map(int, input().split())
+food = [[5] * n for _ in range(n)] # 현재땅의 양분
+tree_food = [list(map(int, input().split())) for _ in range(n)] # 추가되는 양분
+tree = [[0] * n for _ in range(n)]
+
+for _ in range(m):
+    x, y, z = map(int, input().split())
+    tree[x - 1][y - 1] = [z]
+
+for case in range(k):
+    temp_tree = [[0] * n for _ in range(n)]
+    temp_food = [item[:] for item in food]
+    for i in range(n):
+        for j in range(n):
+            if tree[i][j] != 0:
+                tree[i][j].sort()
+                for c in range(len(tree[i][j])):
+                    if tree[i][j][c] <= food[i][j]: # 양분을 먹으면
+                        food[i][j] -= tree[i][j][c]
+                        temp_food[i][j] -= tree[i][j][c]
+                        if temp_tree[i][j] != 0:
+                            temp_tree[i][j] += [(tree[i][j][c] + 1)]
+                        else:
+                            temp_tree[i][j] = [tree[i][j][c] + 1]
+
+                        if (tree[i][j][c] + 1) % 5 == 0: # 가을
+                            for d in range(8):
+                                nx = i + dx[d]
+                                ny = j + dy[d]
+
+                                if 0 <= nx < n and 0 <= ny < n:
+                                    if temp_tree[nx][ny] != 0:
+                                        temp_tree[nx][ny] += [1]
+                                    else:
+                                        temp_tree[nx][ny] = [1]
+
+
+                    else: # 양분을 못먹으면
+                        temp_food[i][j] += tree[i][j][c] // 2
+            temp_food[i][j] += tree_food[i][j]
+    tree = [item[:] for item in temp_tree]
+    food = [item[:] for item in temp_food]
+
+result = 0
+for i in range(n):
+    for j in range(n):
+        if tree[i][j] != 0:
+            result += len(tree[i][j])
+print(result)
+"""

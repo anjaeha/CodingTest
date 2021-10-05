@@ -1,57 +1,55 @@
-import sys
-from heapq import heappush, heappop
-input = sys.stdin.readline
-
+from collections import deque
 n = int(input())
-s = [list(map(int, input().split())) for _ in range(n)]
+graph = [list(map(int, input().split())) for _ in range(n)]
 
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
-q = []
 
-for i in range(n):
-    for j in range(n):
-        if s[i][j] == 9:
-            heappush(q, (0, i, j))
-            s[i][j] = 0
-            break
-
-
-def bfs():
-    body, eat, answer = 2, 0, 0
-    check = [[False] * n for _ in range(n)]
-
+def caneat(x, y): # 현재위치에서 먹을 수 있는 곳까지의 거리와 좌표 구하기
+    global size
+    q = deque()
+    q.append((x, y, 0))
+    visit = [[False] * n for _ in range(n)]
+    visit[x][y] = True
+    eat = deque()
     while q:
-        d, x, y = heappop(q)
-
-        if 0 < s[x][y] < body:
-            eat += 1
-            s[x][y] = 0
-            if eat == body:
-                body += 1
-                eat = 0
-            answer += d
-            d = 0
-
-            while q:
-                q.pop()
-            check = [[False] * n for _ in range(n)]
-
+        x, y, cnt = q.popleft()
         for i in range(4):
-            nd = d + 1
             nx = x + dx[i]
             ny = y + dy[i]
 
-            if nx < 0 or ny < 0 or nx >= n or ny >= n:
-                continue
+            if 0 <= nx < n and 0 <= ny < n:
+                if not visit[nx][ny]:
+                    if size >= graph[nx][ny]:
+                        visit[nx][ny] = True
+                        q.append((nx, ny, cnt + 1))
+                        if size > graph[nx][ny] and graph[nx][ny] != 0:
+                            eat.append((nx, ny, cnt + 1))
+    eat = sorted(eat, key = lambda x : (x[2], x[0], x[1]))
+    return eat
 
-            if check[nx][ny] or body < s[nx][ny]:
-                continue
+size = 2
+for i in range(n):
+    for j in range(n):
+        if graph[i][j] == 9:
+            sharkx, sharky = i, j
+            graph[i][j] = 0
+eat = 0
+result = 0
+while 1:
+    candi = caneat(sharkx, sharky)
+    if candi:
+        eatx, eaty, eatdist = candi.pop(0)
+        graph[eatx][eaty] = 0
+        eat += 1
+        sharkx, sharky = eatx, eaty
+        result += eatdist
 
-            heappush(q, (nd, nx, ny))
-            check[nx][ny] = True
+        if eat == size:
+            eat = 0
+            size += 1
+    else:
+        break
 
-    print(answer)
-
-bfs()
+print(result)
