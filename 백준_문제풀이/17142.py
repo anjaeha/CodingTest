@@ -89,3 +89,98 @@ def dfs(depth):
 dfs(0)
 
 print(result if result != 10000 else -1)
+
+
+"""
+# 바이러스는 상하좌우로 동시에 복제
+# M개를 활성화
+# 모든 칸에 바이러스 퍼뜨리는데 걸리는 최소 시간 구하기
+from collections import deque
+n, m = map(int, input().split())
+graph = [list(map(int, input().split())) for _ in range(n)]
+
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
+
+
+virus = []
+for i in range(n):
+    for j in range(n):
+        if graph[i][j] == 2:
+            virus.append((i, j))
+            graph[i][j] = '#'
+
+
+
+def make_candi(depth): # M개의 바이러스를 선택하는 경우의 수
+    global temp
+    if depth == m:
+        virus_pos.append(list(temp))
+        return
+    
+    for i in range(len(virus)):
+        if visit[i]:
+            continue
+        visit[i] = True
+        temp.append(i)
+        make_candi(depth + 1)
+        temp.pop()
+        for j in range(i + 1, len(virus)):
+            visit[j] = False
+virus_pos = []
+temp = []
+visit = [False] * len(virus)
+make_candi(0)
+
+
+def check(s):
+    for i in range(n):
+        for j in range(n):
+            if s[i][j] == 0:
+                if (i, j) in  virus:
+                    continue
+                else:
+                    return False
+    return True
+
+def make_virus(arr):
+    q = deque()
+    s = [item[:] for item in graph]
+    visit = [[False] * n for _ in range(n)]
+    for i in range(len(arr)):
+        q.append(virus[arr[i]])
+        s[virus[arr[i]][0]][virus[arr[i]][1]] = 0
+        visit[virus[arr[i]][0]][virus[arr[i]][1]] = True
+    while q:
+        x, y = q.popleft()
+
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+
+            if 0 <= nx < n and 0 <= ny < n:
+                if (s[nx][ny] == 0 or s[nx][ny] == '#') and visit[nx][ny] == False:
+                    s[nx][ny] = s[x][y] + 1
+                    visit[nx][ny] = True
+                    q.append((nx, ny))
+    
+    sec = 0
+    flag = check(s)
+    if flag:
+        for i in range(n):
+            for j in range(n):
+                if graph[i][j] == 0:
+                    if s[i][j] > sec:
+                        sec = s[i][j]
+        return sec
+    return -2
+
+MIN = 1000000
+for case in range(len(virus_pos)):
+    arr = virus_pos[case]
+    result = make_virus(arr)
+    if result >= 0:
+        MIN = min(MIN, result)
+
+print(MIN if MIN != 1000000 else -1)
+"""

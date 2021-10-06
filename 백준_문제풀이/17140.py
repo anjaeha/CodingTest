@@ -1,101 +1,77 @@
+# R 연산 - 행을 정렬, 행의 개수 >= 열의 개수인 경우에 적용
+# C 연산 - 열을 정렬, 행의 개수 < 열의 개수인 경우에 적용
+# 연산을 적용하고 가장 큰 배열의 길이에 맞춰 0으로 채움 (0은 정렬할때 무시)
+# 크기가 100을 넘어가면 버리기
 
-from copy import deepcopy
-n, m, k = map(int, input().split())
-n -= 1
-m -= 1
+r, c, k = map(int, input().split())
 graph = [list(map(int, input().split())) for _ in range(3)]
+# graph[r][c] == k가 되는 최소 연산 시간 구하기 (100초 넘으면 - 1)
 
-# R연산
-def R_sort():
-    # 숫자 세기
-    length = len(graph[0])
-    for i in range(len(graph)):
-        temp = dict()
-        for j in range(length):
-            if graph[i][j] == 0:
-                continue
-            if graph[i][j] in temp:
-                temp[graph[i][j]] += 1
-            else:
-                temp[graph[i][j]] = 1
-        temp = sorted(temp.items(), key = lambda x : (x[1], x[0]))
-        s = []
-        for x, y in temp:
-            s.append(x)
-            s.append(y)
-        graph[i] = deepcopy(s[:100])
-    
-    # 가장 긴 행 찾기
-    MAX = -1
-    for i in range(len(graph)):
-        if len(graph[i]) > MAX:
-            MAX = len(graph[i])
-    # 0 추가해주기
-    for i in range(len(graph)):
-        while len(graph[i]) != MAX and len(graph[i]) <= 100:
-            graph[i].append(0)
-
-# C연산
-def C_sort():
-    global graph
-    # 열을 행으로 바꿔서 진행
-    copy_graph = []
+def calC():
+    s = [[0] * len(graph) for _ in range(len(graph[0]))]
     for i in range(len(graph[0])):
-        temp = []
         for j in range(len(graph)):
-            temp.append(graph[j][i])
-        copy_graph.append(list(temp))
-
-    # 숫자 세기
-    length = len(copy_graph[0])
-    for i in range(len(copy_graph)):
-        temp = dict()
-        for j in range(length):
-            if copy_graph[i][j] == 0:
-                continue
-            if copy_graph[i][j] in temp:
-                temp[copy_graph[i][j]] += 1
-            else:
-                temp[copy_graph[i][j]] = 1
+              s[i][j] = graph[j][i]
+    MAX = 0
+    for i in range(len(s)):
+        arr = s[i]
+        s[i] = []
+        temp = {}
+        for j in arr:
+            if j != 0:
+                if j in temp:
+                    temp[j] += 1
+                else:
+                    temp[j] = 1        
         temp = sorted(temp.items(), key = lambda x : (x[1], x[0]))
-        s = []
-        for x, y in temp:
-            s.append(x)
-            s.append(y)
-        copy_graph[i] = deepcopy(s[:100])
+        for rc, val in temp:
+            s[i].append(rc)
+            s[i].append(val)
+        MAX = max(MAX, len(s[i]))
     
-    # 가장 긴 행 찾기
-    MAX = -1
-    for i in range(len(copy_graph)):
-        if len(copy_graph[i]) > MAX:
-            MAX = len(copy_graph[i])
-    # 0 추가해주기
-    for i in range(len(copy_graph)):
-        while len(copy_graph[i]) != MAX and len(copy_graph[i]) <= 100:
-            copy_graph[i].append(0)
-    temp_graph = []
-    for i in range(len(copy_graph[0])):
-        tmp = []
-        for j in range(len(copy_graph)):
-            tmp.append(copy_graph[j][i])
-        temp_graph.append(list(tmp))
-    graph = deepcopy(temp_graph)    
+    for i in range(len(s)):
+        while len(s[i]) != MAX:
+            s[i].append(0)
 
-# 걸린 시간
-result = 0
-while 1:
-    # R연산과 C연산을 반복하다보면 행의 수와 열의 수가 n, m보다 작아질 수 있음.
-    if len(graph) >= (n + 1) and len(graph[0]) >= (m + 1):
-        if graph[n][m] == k:
+    answer = [[0] * len(s) for _ in range(len(s[0]))]
+    for i in range(len(s)):
+        for j in range(len(s[0])):
+            answer[j][i] = s[i][j]
+    return answer
+
+def calR():
+    s = [[] for _ in range(len(graph))]
+    MAX = 0
+    for i in range(len(s)):
+        arr = graph[i]
+        temp = {}
+        for j in arr:
+            if j != 0:
+                if j in temp:
+                    temp[j] += 1
+                else:
+                    temp[j] = 1        
+        temp = sorted(temp.items(), key = lambda x : (x[1], x[0]))
+        for rc, val in temp:
+            s[i].append(rc)
+            s[i].append(val)
+        MAX = max(MAX, len(s[i]))
+    
+    for i in range(len(s)):
+        while len(s[i]) != MAX:
+            s[i].append(0)
+    return s
+
+cnt = 0
+while cnt <= 100:
+    if len(graph) >= r and len(graph[0]) >= c:
+        if graph[r - 1][c - 1] == k:
             break
-    # 100초가 넘어가면 -1 출력
-    if result > 100:
-        result = -1
-        break
-    result += 1
-    # 열의 개수와 행의 개수 비교
     if len(graph) >= len(graph[0]):
-        R_sort()
+        graph = calR()
     else:
-        C_sort()
-print(result)
+        graph = calC()
+
+    cnt += 1
+
+print(cnt if cnt != 101  else -1)
