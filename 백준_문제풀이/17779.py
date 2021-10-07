@@ -55,3 +55,30 @@ for x in range(1, n + 1):
                     if result > temp:
                         result = temp
 print(result)
+
+
+""" 경계선을 긋는 또 다른 방법 / 왼쪽, 오른쪽, 오른쪽, 왼쪽 방향으로 x, y값을 +- 1하며 돌려줌.
+visit = [[False] * (n + 1) for _ in range(n + 1)]
+    visit[x][y] = True
+    nx, ny = x, y
+    for i in range(d1):
+        nx, ny = nx + 1, ny - 1
+        visit[nx][ny] = True
+    for i in range(d2):
+        nx, ny = nx + 1, ny + 1
+        visit[nx][ny] = True
+    for i in range(d1):
+        nx, ny = nx - 1, ny + 1
+        visit[nx][ny] = True
+    for i in range(d2):
+        nx, ny = nx - 1, ny - 1
+        visit[nx][ny] = True
+    
+    for i in range(x + 1, x + d1 + d2):
+        flag = False
+        for j in range(1, n + 1):
+            if visit[i][j]:
+                flag = not flag
+            if flag:
+                visit[i][j] = True
+"""
