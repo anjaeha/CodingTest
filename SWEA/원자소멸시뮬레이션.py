@@ -20,8 +20,8 @@ def check():
         return False
 
 
-dx = [-0.5, 0.5, 0, 0]
-dy = [0, 0, -0.5, 0.5] # 기존에서 x와 y의 위치를 바꿈 x를 y로, y를 x로
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1] # 기존에서 x와 y의 위치를 바꿈 x를 y로, y를 x로
 
 T = int(input())
 
@@ -30,7 +30,7 @@ for tc in range(1, T + 1):
     atom = {}
     for _ in range(n):
         y, x, d, k = map(int, input().split()) # x위치, y위치, 이동 방향, 보유에너지K
-        atom[(-x, y)] = [d, k]
+        atom[(-x * 2, y * 2)] = [d, k]
     # 충돌하거나, 범위를 벗어나거나 둘 중 하나를 해야함.
     result = 0
 
@@ -43,7 +43,7 @@ for tc in range(1, T + 1):
             x, y, d, k = rc[0], rc[1], val[0], val[1]
             nx = x + dx[d]
             ny = y + dy[d]
-            if nx < -1000 or ny < -1000 or nx > 1000 or ny > 1000:
+            if nx < -2000 or ny < -2000 or nx > 2000 or ny > 2000:
                 continue
 
             if new_atom.get((nx, ny)) is None:
