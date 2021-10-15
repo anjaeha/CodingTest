@@ -1,55 +1,56 @@
-# 그래프 밖으로 나간 모래의 양을 구하는 것이 문제
-
-def solve(x, y, dir):
+def move(x, y, dir):
     global result
 
-    lost_sand = 0
-    
-    for dx, dy, z in dir:
+    lost_sand = 0 # 잃어버린 모래양을 파악하기 위한 변수
+
+    for dx, dy, per in dir:
         nx = x + dx
         ny = y + dy
 
-        if z == 0:
-            new_sand = sand[x][y] - lost_sand
+        if per == 0:
+            new_sand = graph[x][y] - lost_sand
+            graph[x][y] = 0 # y에 있던 모든 모래가 a쪽으로 옮겨지기 때문에 0으로 설정 해줌.
         else:
-            new_sand = int(sand[x][y] * z)
-            lost_sand += new_sand
-        
+            new_sand = int(graph[x][y] * per)
+            lost_sand += int(graph[x][y] * per)
+
         if 0 <= nx < n and 0 <= ny < n:
-            sand[nx][ny] += new_sand
+            graph[nx][ny] += new_sand
+
         else:
             result += new_sand
 
+n = int(input())
+graph = [list(map(int, input().split())) for _ in range(n)]
 
+
+left = [(0, -2, 0.05), (-1, -1, 0.1), (-1, 0, 0.07), (-2, 0, 0.02), (-1, 1, 0.01), (1, -1, 0.1), (1, 0, 0.07), (2, 0, 0.02), (1, 1, 0.01), (0, -1, 0)]
+right = [(x, -y, z) for x, y, z in left]
+up = [(y, x, z) for x, y, z, in left]
+down = [(-y, x, z) for x, y, z, in left]
+
+dic = {0 : left, 1 : down, 2 : right, 3 : up}
 
 dx = [0, 1, 0, -1]
-dy = [-1, 0, 1, 0] 
-# 좌 하 우 상
+dy = [-1, 0, 1, 0]
+# 좌, 하, 우, 상
 
-n = int(input())
-sand = [list(map(int, input().split())) for _ in range(n)]
-
-c_x, c_y = n // 2, n // 2
+sx, sy = n // 2, n // 2
+d = 0
 result = 0
 
-left = [(-1, 1, 0.01), (1, 1, 0.01), (-1, 0, 0.07), (1, 0, 0.07), (-2, 0, 0.02), (2, 0, 0.02), (-1, -1, 0.1), (1, -1, 0.1), (0, -2, 0.05), (0, -1, 0)]
-right = [[x, -y, z] for x, y, z in left]
-up = [[y ,x,z] for x, y, z in left]
-down = [[-y, x, z] for x, y, z in left]
+for case in range(2 * n - 1): # 방향 전환 횟수
+    if case == 2 * n - 2:
+        cnt = case // 2
+    else:
+        cnt = case // 2 + 1
 
-dict = {0 : left, 1 : down, 2 : right, 3 : up}
+    for idx in range(cnt):
+        nx = sx + dx[d]
+        ny = sy + dy[d]
+        move(nx, ny, dic[d])
+        sx,sy = nx, ny
 
-for move in range(2 * n - 1):
-    d = move % 4
-    
-    move_cnt = move // 2 + 1
-    if move == 2 * n - 2:
-        move_cnt -= 1
-    
-    for i in range(move_cnt):
-        nx = c_x + dx[d]
-        ny = c_y + dy[d]
-        solve(nx, ny, dict[d])
-        c_x, c_y = nx, ny
+    d = (d + 1) % 4
 
 print(result)
