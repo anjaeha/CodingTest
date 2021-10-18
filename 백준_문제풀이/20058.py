@@ -88,3 +88,98 @@ for i in range(2 ** n):
 
 print(result)
 print(siz)
+
+
+"""
+# 파이어스톰 Q번 시전
+# 모든 격자를 시계방향으로 90도 회전, 얼음 있는 칸 3개 이상과 인접해있지 않으면 얼음의 양 1 감소
+# 남아있는 얼음의 합
+# 남아있는 얼음 중 가장 큰 덩어리의 크기
+from collections import deque
+n, k = map(int, input().split())
+graph = [list(map(int ,input().split())) for _ in range(2 ** n)]
+l = list(map(int, input().split()))
+
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
+
+def rotate(idx):
+    if idx == 0:
+        return graph
+    s = [[0] * (2 ** n) for _ in range(2 ** n)]
+    for i in range(0, 2 ** n, 2 ** idx):
+        for j in range(0, 2 ** n, 2 ** idx):
+            for i2 in range(2 ** idx):
+                for j2 in range(2 ** idx):
+                    s[i + i2][j + j2] = graph[i + 2 ** idx - j2 - 1][j + i2]
+    return s
+
+
+def melt():
+    s = [[0] * (2 ** n) for _ in range(2 ** n)]
+
+    for i in range(2 ** n):
+        for j in range(2 ** n):
+            if graph[i][j] > 0:
+                cnt = 0
+                for d in range(4):
+                    nx = i + dx[d]
+                    ny = j + dy[d]
+
+                    if 0 <= nx < 2 ** n and 0 <= ny < 2 ** n:
+                        if graph[nx][ny] > 0:
+                            cnt += 1
+                if cnt >= 3:
+                    s[i][j] = graph[i][j]
+                else:
+                    s[i][j] = graph[i][j] - 1
+    return s
+
+def count():
+    result = 0
+    for i in range(2 ** n):
+        for j in range(2 ** n):
+            if graph[i][j] > 0:
+                result += graph[i][j]
+    return result
+
+def find(x, y):
+    global visit
+    q = deque()
+    q.append((x, y))
+    length = 1
+    visit[x][y] = True
+
+    while q:
+        x, y = q.popleft()
+
+        for d in range(4):
+            nx = x + dx[d]
+            ny = y + dy[d]
+
+            if 0 <= nx < 2 ** n and 0 <= ny < 2 ** n:
+                if not visit[nx][ny] and graph[nx][ny] > 0:
+                    q.append((nx, ny))
+                    length += 1
+                    visit[nx][ny] = True
+    return length
+
+
+
+for case in range(k):
+    graph = rotate(l[case])
+    graph = melt()
+
+answer1 = count()
+print(answer1)
+
+answer2 = 0
+visit = [[False] * (2 ** n) for _ in range(2 ** n)]
+for i in range(2 ** n):
+    for j in range(2 ** n):
+        if graph[i][j] > 0 and not visit[i][j]:
+            temp = find(i, j)
+            if answer2 < temp:
+                answer2 = temp
+print(answer2)
+"""
