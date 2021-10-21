@@ -1,109 +1,98 @@
-from copy import deepcopy
-T = int(input())
+# 가로 W 세로 D
+# 세로방향으로 K개 이상이 있어야 통과
+# A를 B로 바꿀수 있고 B를 A로 바꿀 수 있음. 한줄을A로, 한줄을B로 가능
 
-def check(): # 보호 필름 성능 테스트
-    for i in range(m):
-        flag = False
-        arr = []
-        for j in range(n):
-            arr.append(graph[j][i])
-        
-        for j in range(n - k + 1):
-            cnt = 1
-            for d in range(j + 1, j + k):
-                if arr[j] == arr[d]:
-                   cnt += 1 
-                else:
-                    break
-            if cnt >= k:
-                flag = True
-                break
-
-        if not flag:
-            return False
-    return True
-
-
-def make_candi(depth): # 용액을 뿌릴 수 있는 경우의 수 구하기
-    global result, temp
-    if depth == result:
+def make_candi(depth, cnt):
+    global temp, candi
+    if depth == cnt:
         candi.append(list(temp))
-        return
+
     for i in range(n):
         if visit[i]:
             continue
         visit[i] = True
         temp.append(i)
-        make_candi(depth + 1)
+        make_candi(depth + 1, cnt)
         temp.pop()
         for j in range(i + 1, n):
             visit[j] = False
 
-for case in range(1, T + 1):
+def check(graph):
+    for i in range(m):
+        flag = False
+        temp = 1
+        color = -1
+        for j in range(n):
+            if color == graph[j][i]:
+                temp += 1
+                if temp >= k:
+                    flag = True
+                    break
+            else:
+                temp = 1
+                if temp >= k:
+                    flag = True
+                    break
+                color = graph[j][i]
+        if not flag:
+            return False
+    return True
+
+T = int(input())
+
+for tc in range(1, T + 1):
     n, m, k = map(int, input().split())
-    graph = [list(map(int, input().split())) for _ in range(n)]
-    result = 0
-    while 1:
+    graph = [list(map(int, input().split())) for _ in range(n)] # 0이면 A 1이면 B
+    copy_graph = [item[:] for item in graph]
+    candi = [] # 용액을 붓는 경우의 수 구하기, A를 부을 수도 있고, B를 부을 수도 있고, AB모두 부을 수도 있음
+    for idx in range(n + 1):
         visit = [False] * n
-        candi = []
         temp = []
-        make_candi(0)
-        temp_graph = deepcopy(graph)
-        for i in range(len(candi)):
-            for j in range(result):
-                for c in range(m):
-                    graph[candi[i][j]][c] = 0
-            flag = check()
-            if flag:
-                break
-            for j in range(result):
-                for c in range(m):
-                    graph[candi[i][j]][c] = 1
-            flag = check()
-            if flag:
-                break
-            # 한줄은 A, 한줄은 B를 할 경우를 고려해야함.
-            for j in range(0, result // 2):
-                for c in range(m):
-                    graph[candi[i][j]][c] = 0
-            for j in range(result // 2, result):
-                for c in range(m):
-                    graph[candi[i][j]][c] = 1
-            flag  = check()
-            if flag:
-                break
-            for j in range(0, result // 2):
-                for c in range(m):
-                    graph[candi[i][j]][c] = 1
-            for j in range(result // 2, result):
-                for c in range(m):
-                    graph[candi[i][j]][c] = 0
-            if result >= 3:
-                for j in range(0, result // 2 + 1):
-                    for c in range(m):
-                        graph[candi[i][j]][c] = 0
-                for j in range(result // 2 + 1, result):
-                    for c in range(m):
-                        graph[candi[i][j]][c] = 1
-                flag  = check()
-                if flag:
-                    break
-                for j in range(0, result // 2 + 1):
-                    for c in range(m):
-                        graph[candi[i][j]][c] = 0
-                for j in range(result // 2 + 1, result):
-                    for c in range(m):
-                        graph[candi[i][j]][c] = 1
-                flag  = check()
-                if flag:
-                    break
-            flag = check()
-            if flag:
-                break
-            graph = deepcopy(temp_graph)
-
-        if flag:
+        make_candi(0, idx)
+    result = 987654321
+    flag = False
+    for idx in range(len(candi)):
+        cur = candi[idx]
+        for c in range(len(cur)):
+            for i in range(m):
+                copy_graph[cur[c]][i] = 0
+        temp = check(copy_graph)
+        if temp:
+            result = len(cur)
+            flag = True
             break
-        result += 1
+        for c in range(len(cur)):
+            for i in range(m):
+                copy_graph[cur[c]][i] = 1
+        temp = check(copy_graph)
+        if temp:
+            result = len(cur)
+            flag = True
+            break
 
-    print("#%d %d" %(case, result))
+        for c in range(len(cur) // 2):
+            for i in range(m):
+                copy_graph[cur[c]][i] = 0
+        for c in range(len(cur) // 2, len(cur)):
+            for i in range(m):
+                copy_graph[cur[c]][i] = 1
+        temp = check(copy_graph)
+        if temp:
+            result = len(cur)
+            flag = True
+            break
+        for c in range(len(cur) // 2):
+            for i in range(m):
+                copy_graph[cur[c]][i] = 1
+        for c in range(len(cur) // 2, len(cur)):
+            for i in range(m):
+                copy_graph[cur[c]][i] = 0
+        temp = check(copy_graph)
+        if temp:
+            result = len(cur)
+            flag = True
+            break
+
+        copy_graph = [item[:] for item in graph]
+
+    print("#%d %d" %(tc, result))

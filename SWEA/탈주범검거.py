@@ -107,3 +107,47 @@ for case in range(1, T + 1):
         pos = move()
 
     print("#%d %d" %(case, len(pos)))
+
+""" 딕셔너리를 사용하여 왔던 길과 돌아가는 길 둘다 있으면 갈수있는 경로로 표시시
+di = {0 : [] ,1 : [(-1, 0), (1, 0), (0, -1), (0, 1)], 2 : [(-1, 0), (1, 0)], 3 : [(0, -1), (0, 1)], 4 : [(-1, 0), (0, 1)], 5 : [(1, 0), (0, 1)], 6 : [(1, 0), (0, -1)], 7 : [(0, -1), (-1, 0)]}
+def move():
+    global pos
+    s = [item[:] for item in pos]
+
+    for x in range(n):
+        for y in range(m):
+            if pos[x][y] == 1:
+
+                d = dir[graph[x][y]]
+
+                for dx, dy in d:
+                    nx = x + dx
+                    ny = y + dy
+
+                    if 0 <= nx < n and 0 <= ny < m:
+                        if (-dx, -dy) in dir[graph[nx][ny]]:
+                            s[nx][ny] = 1
+    pos = s
+
+
+T = int(input())
+
+for tc in range(1, T + 1):
+    n, m, r, c, l = map(int, input().split()) # N * M크기 (r, c)위치, 소요된 시간l
+    graph = [list(map(int, input().split())) for _ in range(n)]
+
+    pos = [[0] * m for _ in range(n)]
+    pos[r][c] = 1 # 도착하면 1시간 경과됨.
+
+
+    for case in range(l - 1):
+        move()
+
+    result = 0
+    for i in range(n):
+        for j in range(m):
+            if pos[i][j] == 1:
+                result += 1
+
+    print("#%d %d" %(tc, result))
+"""
