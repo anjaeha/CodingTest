@@ -14,3 +14,4 @@
 - 대학생 기본반 : https://www.acmicpc.net/workbook/view/2047
 - 프로그래머스 고득점 Kit : https://programmers.co.kr/learn/challenges?tab=algorithm_practice_kit
 - 프로그래머스 SQL 문제 : https://programmers.co.kr/learn/challenges?tab=sql_practice_kit
+- 데일리 문제 : https://github.com/tony9402/baekjoon/blob/main/picked.md
