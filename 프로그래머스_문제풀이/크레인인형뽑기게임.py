@@ -1,28 +1,22 @@
 def solution(board, moves):
-    answer = 0
-    doll = []
-    
-    b = [[] for _ in range(len(board[0]))]
-    
-    for i in range(len(board[0])):
-        for j in range(len(board[0])):
-            if board[j][i] != 0:
-                b[i].append(board[j][i])
-    
-    for i in moves:
-        if b[i-1] == []:
-            continue
-        else:
-            temp = b[i-1].pop(0)
-            if doll == []:
-                doll.append(temp)
+    # 인형 뽑기 시작
+    pick = []
+    for move in moves:
+        move -= 1
+        for i in range(len(board)):
+            if board[i][move] != 0:
+                pick.append(board[i][move])
+                board[i][move] = 0
+                break
             else:
-                if temp == doll[-1]:
-                    del doll[-1]
-                    answer += 2
-                else:
-                    doll.append(temp)
-        
-            
-    
+                continue
+                
+    answer = 0
+    q = [-1]
+    for i in range(len(pick)):
+        if q[-1] != pick[i]:
+            q.append(pick[i])
+        else:
+            q.pop()
+            answer += 2
     return answer

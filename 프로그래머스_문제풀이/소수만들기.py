@@ -1,18 +1,14 @@
-from itertools import combinations
-
-def check(num):
+def prime_number(num):
     for i in range(2, num):
         if num % i == 0:
             return False
     return True
 
-
 def solution(nums):
-    result = 0
-    combination = list(combinations(nums, 3))
-    
-    for combi in combination:
-        if check(sum(combi)):
-            result += 1
-        
-    return result
+    answer = 0
+    for a in range(len(nums)):
+        for b in range(a + 1, len(nums)):
+            for c in range(b + 1, len(nums)):
+                if prime_number(nums[a] + nums[b] + nums[c]):
+                    answer += 1
+    return answer

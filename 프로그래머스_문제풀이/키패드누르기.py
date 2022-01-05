@@ -1,33 +1,33 @@
-def solution(numbers, hand):
+def solution(numbers, useHand):
     answer = ''
-    left = 10
-    right = 12
+    hand = [10, 12]
+    
+    for i in range(len(numbers)):
+        if numbers[i] == 0:
+            numbers[i] = 11
     
     for number in numbers:
-        if number in [1,4,7]:
+        if number in [1, 4, 7]:
             answer += 'L'
-            left = number
-        elif number in [3,6,9]:
+            hand[0] = number
+        elif number in [3, 6, 9]:
             answer += 'R'
-            right = number
+            hand[1] = number
         else:
-            if number == 0:
-                number = 11
-            Aleft = abs(left - number)
-            Aright = abs(right - number)
+            leftDis = abs(hand[0] - number) // 3 + abs(hand[0] - number) % 3
+            rightDis = abs(hand[1] - number) // 3 + abs(hand[1] - number) % 3
             
-            if sum(divmod(Aleft, 3)) > sum(divmod(Aright, 3)):
-                answer += 'R'
-            elif sum(divmod(Aleft, 3)) < sum(divmod(Aright, 3)):
+            if leftDis < rightDis:
                 answer += 'L'
-            else:
-                if hand == 'left':
-                    answer += 'L'
-                else:
+                hand[0] = number
+            elif leftDis > rightDis:
+                answer += 'R'
+                hand[1] = number
+            elif leftDis == rightDis:
+                if useHand == 'right':
                     answer += 'R'
-            if answer[-1] == 'R':
-                right = number
-            else:
-                left = number
-
+                    hand[1] = number
+                else:
+                    answer += 'L'
+                    hand[0] = number
     return answer
