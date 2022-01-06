@@ -1,24 +1,21 @@
-def solution(n, lost, reserve):
-    number = [1] * (n+1)
-    number[0] = 0
-    
+def solution(n, lost, reserve):    
+    # 본인에게 체육복이 있지만 도난당한 사람을 제외
+    losts = []
     for i in lost:
-        number[i] -= 1
-    for i in reserve:
-        number[i] += 1
-    
-    for i in range(1, n):
-        if number[i] == 0:
-            if number[i-1] == 2:
-                number[i-1] = 1
-                number[i] = 1
-            elif number[i+1] == 2:
-                number[i+1] = 1
-                number[i] = 1
-    cnt = 0
-    for i in number:
-        if i >= 1:
-            cnt += 1
-    
-    
-    return cnt
+        if i not in reserve:
+            losts.append(i)
+        else:
+            reserve.remove(i)
+            
+    answer = n - len(losts)
+    losts.sort()
+    reserve.sort()
+    for i in range(len(losts)):
+        if (losts[i] - 1) in reserve:
+            answer += 1
+            reserve.remove(losts[i] - 1)
+        elif (losts[i] + 1) in reserve:
+            answer += 1
+            reserve.remove(losts[i] + 1)
+            
+    return answer
