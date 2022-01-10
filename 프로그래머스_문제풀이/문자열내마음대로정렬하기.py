@@ -1,6 +1,27 @@
-def solution(strings, n):
-    answer = []
+def solution(s):
+    up = []
+    low = []
     
-    strings.sort()
-    strings.sort(key = lambda x : x[n])
-    return strings
+    for i in s:
+        if i.isupper():
+            up.append(i)
+        else:
+            low.append(i)
+            
+    low.sort(reverse = True)
+    up.sort(reverse = True)
+    
+    answer = ''
+    for i in low:
+        answer += i
+    for i in up:
+        answer += i
+        
+    return answer
+
+
+def solution(s):
+    s = list(s)
+    s.sort(reverse = True)
+    
+    return ''.join(s)
