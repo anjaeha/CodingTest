@@ -1,19 +1,15 @@
-import math
-def solution(progresses, speeds):
-    days = []
+def solution(p, s):
     answer = []
-    for i in range(len(progresses)):
-        days.append(math.ceil((100 - progresses[i]) / speeds[i]))
     
-    front = 0
-    for idx in range(len(days)):
-        if days[front] < days[idx]:
-            answer.append(idx - front)
-            front = idx
-            
-    answer.append(len(days) - front)
-   
+    while p:
+        for i in range(len(p)):
+            p[i] += s[i]
         
+        cnt = 0
+        while p and p[0] >= 100:
+            p.pop(0)
+            s.pop(0)
+            cnt += 1
+        if cnt:
+            answer.append(cnt)
     return answer
-
-print(solution([95, 90, 99, 99, 80, 99], [1, 1, 1, 1, 1, 1]))
