@@ -1,16 +1,15 @@
-def solution(priorities, location):
-    loc = [i for i in range(len(priorities))]
-    final_loc = []
+def solution(p, location):
+    check = [False] * len(p)
+    check[location] = True
+    answer = 0
     
-    while len(priorities) != 0:
-        if priorities[0] == max(priorities):
-            priorities.pop(0)
-            final_loc.append(loc.pop(0))
+    while 1:
+        if p[0] == max(p):
+            p.pop(0)
+            temp = check.pop(0)
+            answer += 1
+            if temp == True:
+                return answer
         else:
-            priorities.append(priorities.pop(0))
-            loc.append(loc.pop(0))
-            
-    return final_loc.index(location) + 1
-
-
-print(solution([2,1,3,2], 2))
+            p.append(p.pop(0))
+            check.append(check.pop(0))
