@@ -1,12 +1,13 @@
 def solution(citations):
-    citations.sort()
     answer = 0
-    l = len(citations)
-    for i in range(l):
-        if citations[i] >= l - i:
-            return l - i
-        
-    return 0
-
-
-print(solution([3,0,6,1,5]))
+    for i in range(1, len(citations) + 1):
+        cnt = 0
+        for j in range(len(citations)):
+            if citations[j] >= i:
+                cnt += 1
+        if cnt >= i:
+            answer = i
+        else:
+            break
+            
+    return answer
