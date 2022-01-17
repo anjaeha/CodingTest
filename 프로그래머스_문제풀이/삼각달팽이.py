@@ -1,28 +1,25 @@
 def solution(n):
-    res = [[0] * n for _ in range(n)]
-    answer = []
-    x, y = -1, 0
-    num = 1
+    graph = [[0] * i for i in range(1, n + 1)]
 
+    cnt = 1
+    x, y = -1, 0
+    
     for i in range(n):
-        for j in range(i, n):
+        for j in range(n - i):
+            
             if i % 3 == 0:
                 x += 1
             elif i % 3 == 1:
                 y += 1
-            elif i % 3 == 2:
-                x -= 1
-                y -= 1
-            
-            res[x][y] = num
-            num += 1
-    print(res)
-    for i in res:
-        for j in i:
-            if j != 0:
-                answer.append(j)
-    return answer
-            
+            else:
+                x, y = x - 1, y - 1
+                
+            graph[x][y] = cnt
+            cnt += 1
     
-
-print(solution(4))
+    result = []
+    for i in range(n):
+        for j in range(len(graph[i])):
+            result.append(graph[i][j])
+            
+    return result
