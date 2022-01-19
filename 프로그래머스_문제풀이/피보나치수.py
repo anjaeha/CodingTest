@@ -1,19 +1,7 @@
-import sys
-sys.setrecursionlimit(10000)
-
-dp = [0] * 100001
-dp[1] = 1
-
 def solution(n):
-    if n == 0:
-        return 0
-    elif n == 1:
-        return 1
+    answer = [0] * (n + 1)
+    answer[1] = 1
+    for i in range(2, n + 1):
+        answer[i] = answer[i - 1] + answer[i - 2]
     
-    for i in range(2, len(dp)):
-        dp[i] = (dp[i-1] + dp[i-2] ) % 1234567
-
-    return dp[n]
-
-
-# print(solution(5))
+    return answer[n] % 1234567
