@@ -1,14 +1,11 @@
 def solution(s):
-    s = s.lower()
-    list_s = s.split(" ")
-    answer = ""
-
-    for i in list_s:
-        i = i.capitalize()
-        answer += i + " "
-
-    return answer[:-1]
-
-
-
-print(solution("3people unFollowed me"))
+    s = s.split(' ')
+    answer = []
+    for word in s:
+        if word and word[0].isalpha():
+            temp = word[0].upper() + word[1:].lower()
+            answer.append(temp)
+        else:
+            answer.append(word.lower())
+    
+    return ' '.join(answer)
