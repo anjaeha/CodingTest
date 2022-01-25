@@ -1,24 +1,24 @@
 def solution(msg):
     answer = []
-    alpha = dict()
-    for i in range(ord('A'), ord('Z') + 1):
+    alpha = {}
+    for i in range(65, 91):
         alpha[chr(i)] = i - 64
-        
+    
     idx = 0
-    leng = 0
+    long = 0
     maxidx = 26
     
     while 1:
-        leng += 1
-        if not msg[idx:idx+leng] in alpha:
+        long += 1
+        if msg[idx : idx + long] not in alpha:
             maxidx += 1
-            alpha[msg[idx:idx+leng]] = maxidx
-            answer.append(alpha[msg[idx:idx+leng-1]])
-            idx = idx + leng - 1
-            leng = 0
+            alpha[msg[idx : idx + long]] = maxidx
+            answer.append(alpha[msg[idx : idx + long - 1]])
+            idx += long - 1
+            long = 0
         else:
-            if idx + leng - 1 == len(msg):
-                answer.append(alpha[msg[idx:idx+leng-1]])
+            if idx + long - 1 == len(msg):
+                answer.append(alpha[msg[idx : idx + long - 1]])
                 break
                 
     return answer

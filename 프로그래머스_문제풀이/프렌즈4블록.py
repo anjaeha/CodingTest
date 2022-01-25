@@ -1,38 +1,36 @@
-def solution(m, n, b):
+from collections import deque
+def solution(m, n, board):
     answer = 0
-    
-    board = []
-    for i in range(m):
-        board.append(list(b[i]))
+    board = [list(board[i]) for i in range(m)]
+    flag = True
+    while flag:
+        flag = False
+        graph = [[False] * n for _ in range(m)]
+        for x in range(m - 1):
+            for y in range(n - 1):
+                if board[x][y] != -1:
+                    now = board[x][y]
+                    if now == board[x + 1][y] and now == board[x][y + 1] and now == board[x + 1][y + 1]:
+                        graph[x][y], graph[x + 1][y], graph[x][y + 1], graph[x + 1][y + 1] = True, True, True, True
+
+        for x in range(m):
+            for y in range(n):
+                if graph[x][y]:
+                    board[x][y] = -1
+                    answer += 1
+                    flag = True
         
-    while 1:
-        check = []
-        for i in range(m - 1):
-            for j in range(n - 1):
-                if board[i][j] == '0':
-                    continue
-                if board[i][j] == board[i+1][j]:
-                    if board[i][j] == board[i][j+1] == board[i+1][j+1]:
-                        check.append((i, j))
-                        check.append((i+1, j))
-                        check.append((i, j+1))
-                        check.append((i+1, j+1))
-        if len(check) == 0:
-            break
-        else:
-            answer += len(set(check))
-            for c in check:
-                board[c[0]][c[1]] = '0'
-            
-            for c in check:
-                up = c[0] - 1
-                down = c[0]
-                
-                while up >= 0:
-                    if board[down][c[1]] == '0' and board[up][c[1]] != '0':
-                        board[down][c[1]] = board[up][c[1]]
-                        board[up][c[1]] = '0'
-                        down -= 1
-                    up -= 1
+        
+        for y in range(n):
+            bag = deque()
+            for x in range(m - 1, -1, -1):
+                if board[x][y] != -1:
+                    bag.append(board[x][y])
+                    board[x][y] = -1
+        
+            for x in range(m - 1, -1, -1):
+                if bag:
+                    board[x][y] = bag.popleft()
                     
+    
     return answer
