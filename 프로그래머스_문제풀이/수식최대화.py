@@ -1,36 +1,30 @@
 from itertools import permutations
-
-def calc(op, cnt, exp):
-    if exp.isdigit():
-        return exp
-    else:
-        if op[cnt] == '*':
-            split_data = exp.split('*')
-            temp = []
-            for s in split_data:
-                temp.append(calc(op, cnt + 1, s))
-            return str(eval('*'.join(temp)))
-        if op[cnt] == '+':
-            split_data = exp.split('+')
-            temp = []
-            for s in split_data:
-                temp.append(calc(op, cnt + 1, s))
-            return str(eval('+'.join(temp)))
-        if op[cnt] == '-':
-            split_data = exp.split('-')
-            temp = []
-            for s in split_data:
-                temp.append(calc(op, cnt + 1, s))
-            return str(eval('-'.join(temp)))
-
 def solution(expression):
-    answer = 0
-    ops = list(permutations(['-', '*', '+'], 3))
+    answer = -1
+    temp = ''
+    expre = []
+    for i in range(len(expression)):
+        if expression[i].isdigit():
+            temp += expression[i]
+        else:
+            expre.append(temp)
+            expre.append(expression[i])
+            temp = ''
+    expre.append(temp)
     
-    for op in ops:
-        result = abs(int(calc(op, 0, expression)))
+    calc = ['*', '-', '+']
+    priority = list(permutations(calc, len(calc)))
+    
+    for p in priority:
+        temp = expre[:]
+        for i in range(len(p)):
+            while p[i] in temp:
+                idx = temp.index(p[i])
+                t = temp[idx - 1] + temp[idx] + temp[idx + 1]
+                del temp[idx - 1], temp[idx - 1], temp[idx - 1]
+                temp.insert(idx - 1, str(eval(t)))
         
-        if result > answer:
-            answer = result
+        if len(temp) == 1:
+            answer = max(answer, abs(int(temp[0])))
     
     return answer
