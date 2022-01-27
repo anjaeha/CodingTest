@@ -1,16 +1,12 @@
+from collections import Counter
 def solution(s):
+    s = s.replace('{', '').replace('}', '').replace(',', ' ')
+    s = s.split()
+    
     answer = []
-    s = s[2:-2]
+    s = sorted(Counter(s).items(), key = lambda x : x[1])
     
-    ans = s.split("},{")
-    
-    for i in ans:
-        n = i.split(',')
+    for rc, val in s:
+        answer.append(int(rc))
         
-        for j in n:
-            if int(j) not in answer:
-                answer.append(int(j))
-
-    return answer
-    
-print(solution("{{2},{2,1},{2,1,3},{2,1,3,4}}"))
+    return answer[::-1]
