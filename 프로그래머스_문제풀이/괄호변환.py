@@ -1,51 +1,37 @@
-def isBalance(p):
+def check(s):
+    left, right = 0, 0
+    flag = True
     stack = []
-    for i in range(len(p)):
-        if p[i] == '(':
-            stack.append(p[i])
+
+    for i in range(len(s)):
+        if s[i] == '(':
+            left += 1
+            stack.append('(')
         else:
+            right += 1
             if stack:
-                if stack[-1] == '(':
-                    stack.pop()
-                else:
-                    return False
+                stack.pop()
             else:
-                return False
-    else:
-        return True # P가 이미 올바른 괄호 문자열일때
-    
-def div(p):
-    open_p = 0
-    close_p = 0
-    
-    for i in range(len(p)):
-        if p[i] == '(':
-            open_p += 1
-        else:
-            close_p += 1
-            
-        if open_p == close_p:
-            return p[:i + 1], p[i + 1:]
-    
+                flag = False
+        if left == right:
+            return i + 1, flag
+
+
 def solution(p):
     if p == '':
         return ''
-    
-    u, v = div(p)
-    
-    if isBalance(u):
+
+    idx, flag = check(p)
+    u, v = p[:idx], p[idx:]
+
+    if flag:
         return u + solution(v)
-    
-    answer = '('
-    
-    answer += solution(v)
-    
-    answer += ')'
-    
-    for k in u[1:len(u) - 1]:
-        if k == '(':
+
+    answer = '(' + solution(v) + ')'
+    for i in range(1, len(u) - 1):
+        if u[i] == '(':
             answer += ')'
         else:
             answer += '('
-    
+
     return answer
