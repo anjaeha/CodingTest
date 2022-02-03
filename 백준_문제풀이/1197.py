@@ -1,30 +1,33 @@
-import sys
-input = sys.stdin.readline
 
-n, m = map(int, input().split())
-graph = [list(map(int, input().split())) for _ in range(m)]
-graph.sort(key = lambda x : x[2])
+def find(parent, x):
+    if parent[x] != x:
+        parent[x] = find(parent, parent[x])
+    return parent[x]
 
 
-cost = 0
+def union(parent, a, b):
+    a = find(parent, a)
+    b = find(parent, b)
 
-p = [i for i in range(n+1)]
+    if a < b:
+        parent[b] = a
+    else:
+        parent[a] = b
 
-def find(u):
-    if u != p[u]:
-        p[u] = find(p[u])
-    return p[u]
 
-def union(u, v):
-    root1 = find(u)
-    root2 = find(v)
-    p[root2] = root1
+v, e = map(int, input().split())
 
-for e in graph:
-    a, b, c = e
+edges = [list(map(int, input().split())) for _ in range(e)]
 
-    if find(a) != find(b):
-        union(a, b)
-        cost += c
+edges.sort(key = lambda x : x[2])
 
-print(cost)
+parent = [i for i in range(v + 1)]
+
+result = 0
+for edge in edges:
+    a, b, cost = edge
+    if find(parent, a) != find(parent, b):
+        union(parent, a, b)
+        result += cost
+
+print(result)
