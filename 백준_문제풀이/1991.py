@@ -1,39 +1,36 @@
-import sys
-input = sys.stdin.readline
-
 n = int(input())
 tree = {}
 
-for _ in range(n):
+for i in range(n):
     root, left, right = input().split()
-    tree[root] = (left, right)
+    tree[root] = [left, right]
 
-def preorder(node):
-    if node == '.':
-        return
-    
-    print(node, end = '')
-    preorder(tree[node][0])
-    preorder(tree[node][1])
-
-def inorder(node):
-    if node == '.':
-        return
-    
-    inorder(tree[node][0])
-    print(node, end = '')
-    inorder(tree[node][1])
-
-def postorder(node):
+def pre_order(node):
     if node == '.':
         return
 
-    postorder(tree[node][0])
-    postorder(tree[node][1])
     print(node, end = '')
+    pre_order(tree[node][0])
+    pre_order(tree[node][1])
 
-preorder('A')
+def in_order(node):
+    if node == '.':
+        return
+
+    in_order(tree[node][0])
+    print(node, end='')
+    in_order(tree[node][1])
+
+def post_order(node):
+    if node == '.':
+        return
+
+    post_order(tree[node][0])
+    post_order(tree[node][1])
+    print(node, end='')
+
+pre_order('A')
 print()
-inorder('A')
+in_order('A')
 print()
-postorder('A')
+post_order('A')
