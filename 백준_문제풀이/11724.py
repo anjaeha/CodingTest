@@ -1,63 +1,37 @@
-N, M = map(int, input().split())
+def dfs(x):
+    visit[x] = True
+    for i in graph[x]:
+        if not visit[i]:
+            dfs(i)
 
-s = [[0] * (N+1) for _ in range(N+1)]
-visit = [0 for i in range(N+1)]
-cnt = 0
-
-def dfs(i):
-    visit[i] = 1
-    for k in range(1, N+1):
-        if s[i][k] == 1 and visit[k] == 0:
-            dfs(k)
-
-
-for case in range(M):
-    a1, a2 = map(int, input().split())
-    s[a1][a2] = 1
-    s[a2][a1] = 1
-
-
-for i in range(1, N+1):
-    if visit[i] == 0:
-        dfs(i)
-        cnt += 1
-    
-print(cnt)
-
-"""
-import sys
-input = sys.stdin.readline
 from collections import deque
-
-n, m = map(int, input().split())
-
-s = [[0] * (n+1) for _ in range(n+1)]
-visit = [0] * (n+1)
-
-for i in range(m):
-    x, y = map(int, input().split())
-    s[x][y] = 1
-    s[y][x] = 1
-
-
-def bfs(v):
+def bfs(x):
     q = deque()
-    q.append(v)
-    visit[v] = 1
+    q.append(x)
 
     while q:
         x = q.popleft()
-
-        for i in range(1, n+1):
-            if s[x][i] == 1 and visit[i] == 0:
+        for i in graph[x]:
+            if not visit[i]:
                 q.append(i)
-                visit[i] = 1
+                visit[i] = True
+
+n, m = map(int, input().split()) # 정점의 개수 N, 간선의 개수 M
+graph = [[] for _ in range(n + 1)]
+for i in range(m):
+    x, y = map(int, input().split())
+    graph[x].append(y)
+    graph[y].append(x)
 
 
-cnt = 0
-for i in range(1, n+1):
-    if visit[i] == 0:
-        bfs(i)
-        cnt += 1
-print(cnt)
-"""
+visit = [False] * (n + 1)
+answer = 0
+for i in range(1, n + 1):
+    if visit[i]:
+        continue
+    for j in graph[i]:
+        if not visit[j]:
+            bfs(j)
+    answer += 1
+
+print(answer)

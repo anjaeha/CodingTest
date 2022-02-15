@@ -1,6 +1,4 @@
-import sys
 from collections import deque
-input = sys.stdin.readline
 
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
@@ -46,3 +44,35 @@ count.sort()
 print(len(count))
 for i in count:
     print(i)
+
+"""
+def dfs(x, y):
+    global cnt
+    graph[x][y] = 0
+    for d in range(4):
+        nx = x + dx[d]
+        ny = y + dy[d]
+        if 0 <= nx < n and 0 <= ny < n:
+            if graph[nx][ny] == 1:
+                dfs(nx, ny)
+                cnt += 1
+
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
+
+n = int(input())
+graph = [list(map(int, input())) for _ in range(n)]
+
+answer = []
+for i in range(n):
+    for j in range(n):
+        if graph[i][j] == 1:
+            cnt = 1
+            dfs(i, j)
+            answer.append(cnt)
+
+print(len(answer))
+answer.sort()
+for i in answer:
+    print(i)
+"""

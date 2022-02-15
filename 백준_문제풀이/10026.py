@@ -1,49 +1,38 @@
+import sys
+sys.setrecursionlimit(10 ** 4)
 n = int(input())
+graph = [list(input()) for _ in range(n)]
+board = [i[:] for i in graph]
 
-s = []
-copy = [[0] * n for _ in range(n)]
-
+dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
-dx = [1, -1, 0, 0]
 
-cnt = 0
-cntt = 0
+def dfs(x, y, game):
+    game[x][y] = '.'
+    for d in range(4):
+        nx = x + dx[d]
+        ny = y + dy[d]
 
-for case in range(n):
-    s.append(list(input()))
-
-
-def bfs(i,j,v,arr):
-    queue = [[i,j]]
-    arr[i][j] = 0
-    while queue:
-        a, b = queue[0][0], queue[0][1]
-        del queue[0]
-
-        for k in range(4):
-            x = a + dx[k]
-            y = b + dy[k]
-        
-            if 0 <= x < n and 0 <= y < n and arr[x][y] == v:
-                queue.append([x,y])
-                arr[x][y] = 0
-
+        if 0 <= nx < n and 0 <= ny < n:
+            if game[nx][ny] == now:
+                dfs(nx, ny, game)
 
 for i in range(n):
     for j in range(n):
-        if s[i][j] == 'R' or s[i][j] == 'G':
-            copy[i][j] = 1
-        else:
-            copy[i][j] = 2
+        if board[i][j] in ['R', 'G']:
+            board[i][j] = 'RG'
+
+normal, blind = 0, 0
 
 for i in range(n):
     for j in range(n):
-        if s[i][j] != 0:
-            bfs(i, j, s[i][j], s)
-            cnt += 1
-        
-        if copy[i][j] != 0:
-            bfs(i, j, copy[i][j], copy)
-            cntt += 1
+        if graph[i][j] != '.':
+            now = graph[i][j]
+            dfs(i, j, graph)
+            normal += 1
+        if board[i][j] != '.':
+            now = board[i][j]
+            dfs(i, j, board)
+            blind += 1
 
-print(cnt, cntt)
+print(normal, blind)

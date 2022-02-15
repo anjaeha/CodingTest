@@ -1,42 +1,47 @@
-import sys
-input = sys.stdin.readline
+dx = [-1, -1, 0, 1, 1, 1, 0, -1]
+dy = [0, 1, 1, 1, 0, -1, -1, -1]
 from collections import deque
-
-dx = [-1, 1, 0, 0, -1, -1, 1, 1]
-dy = [0, 0, -1, 1, -1, 1, -1, 1]
-
-def bfs(i, j):
+def bfs(x, y):
+    visit = [[False] * m for _ in range(n)]
+    visit[x][y] = True
+    graph[x][y] = 0
     q = deque()
-    q.append((i,j))
+    q.append((x, y))
+
     while q:
         x, y = q.popleft()
+        for d in range(8):
+            nx = x + dx[d]
+            ny = y + dy[d]
 
-        for i in range(8):
-            nx = x + dx[i]
-            ny = y + dy[i]
+            if 0 <= nx < n and 0 <= ny < m:
+                if graph[nx][ny] == 1 and not visit[nx][ny]:
+                    q.append((nx, ny))
+                    visit[nx][ny] = True
+                    graph[nx][ny] = 0
 
-            if nx < 0 or nx >= h or ny < 0 or ny >= w:
-                continue
+def dfs(x, y):
+    graph[x][y] = 0
 
-            if s[nx][ny] == 1:
-                q.append((nx, ny))
-                s[nx][ny] = 0
+    for d in range(8):
+        nx = x + dx[d]
+        ny = y + dy[d]
 
+        if 0 <= nx < n and 0 <= ny < m:
+            if graph[nx][ny] == 1:
+                dfs(nx, ny)
 
 while 1:
-    w, h = map(int, input().split())
-    cnt = 0
-    if w == 0 and h == 0:
+    m, n = map(int, input().split())
+    if m == 0 and n == 0:
         break
-    s = []
-    for i in range(h):
-        s.append(list(map(int, input().split())))
+    graph = [list(map(int, input().split())) for _ in range(n)]
 
-    for i in range(h):
-        for j in range(w):
-            if s[i][j] == 1:
-                bfs(i, j)
-                s[i][j] = 0
-                cnt += 1
+    answer = 0
+    for i in range(n):
+        for j in range(m):
+            if graph[i][j] == 1:
+                bfs(i, j)   # dfs(i, j)로도 가능하다
+                answer += 1
 
-    print(cnt)
+    print(answer)
