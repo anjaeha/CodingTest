@@ -1,39 +1,36 @@
-M, N, K = map(int, input().split())
+import sys
+sys.setrecursionlimit(10 ** 4)
 
-dx = [1, -1, 0, 0]
+def dfs(x, y):
+    global cnt
+    graph[x][y] = 1
+    for d in range(4):
+        nx = x + dx[d]
+        ny = y + dy[d]
+        if 0 <= nx < n and 0 <= ny < m:
+            if graph[nx][ny] == 0:
+                dfs(nx, ny)
+                cnt += 1
+
+n, m, k = map(int, input().split())
+
+dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
-cnt = []
 
-graph = [[0] * N for _ in range(M)]
+graph = [[0] * m for _ in range(n)]
+for i in range(k):
+    y1, x1, y2, x2 = map(int, input().split())
+    for x in range(x1, x2):
+        for y in range(y1, y2):
+            graph[x][y] = 1
 
-for case in range(K):
-    x1, y1, x2, y2 = map(int, input().split())
-    for i in range(y1, y2):
-        for j in range(x1, x2):
-            graph[i][j] = 1
-
-
-for i in range(M):
-    for j in range(N):
+answer = []
+for i in range(n):
+    for j in range(m):
         if graph[i][j] == 0:
-            graph[i][j] = 1
-            count = 1
-            queue = [[i, j]]
-
-            while queue:
-                x, y = queue[0][0], queue[0][1]
-                del queue[0]
-                
-                for k in range(4):
-                    x1 = x + dx[k]
-                    y1 = y + dy[k]
-
-                    if 0 <= x1 < M and 0 <= y1 < N and graph[x1][y1] == 0:
-                        graph[x1][y1] = 1
-                        queue.append([x1, y1])
-                        count += 1
-            cnt.append(count)
-
-cnt.sort()
-print(len(cnt))
-print(*cnt)
+            cnt = 1
+            dfs(i, j)
+            answer.append(cnt)
+answer.sort()
+print(len(answer))
+print(*answer)
