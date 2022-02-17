@@ -1,66 +1,67 @@
 from collections import deque
-n = int(input())
-s = list(map(int, input().split()))
 
-graph = [[] for _ in range(n)]
-for i in range(n):
-    temp = list(map(int, input().split()))
-    for j in range(1, temp[0] + 1):
-        graph[i].append(temp[j] - 1)
-
-MIN = 10000
-def dfs(cnt, end):
-    global MIN
-    if cnt == end:
-        left, right = [], []
+def make_candi(cnt):
+    global idx
+    if cnt == idx:
+        candi.append(list(temp))
+        s = []
         for i in range(n):
-            if visit[i]:
-                left.append(i)
-            else:
-                right.append(i)
-        ans1 = bfs(left)
-        ans2 = bfs(right)
-        if ans1 == 0 or ans2 == 0:
-            return
-        else:
-            temp = abs(ans1 - ans2)
-            if MIN > temp:
-                MIN = temp
-            return
+            if i not in temp:
+              s.append(i)
+        reverse_candi.append(list(s))
+        return
 
 
     for i in range(n):
-        if visit[i]:
-            continue
-        visit[i] = True
-        dfs(cnt + 1, end)
-        visit[i] = False
+        if not visit[i]:
+            temp.append(i)
+            visit[i] = True
+            make_candi(cnt + 1)
+            temp.pop()
+            for j in range(i + 1, n):
+                visit[j] = False
 
-# 연결이 되어있는지 확인하고 인구수가 몇인지 구함
-def bfs(array):
+n = int(input())
+people = list(map(int, input().split()))
+graph = [[] for _ in range(n)]
+for i in range(n):
+    temp = list(map(int, input().split()))
+    for j in range(temp[0]):
+        graph[i].append(temp[1 + j] - 1)
+
+candi = []
+reverse_candi = []
+for i in range(1, n // 2 + 1):
+    temp = []
+    visit = [False] * n
+    idx = i
+    make_candi(0)
+
+def connect(arr): # 배열안에 원소들이 다 연결되어있는지 확인
     q = deque()
-    q.append(array[0])
-    check = [False] * n
-    check[array[0]] = True
-    cnt = 1
-    ans = 0
+    q.append(arr[0])
+    visit = [False] * n
+    visit[arr[0]] = True
     while q:
         x = q.popleft()
-        ans += s[x]
-        for nx in graph[x]:
-            if nx in array and check[nx] == False:
-                check[nx] = True
-                q.append(nx)
-                cnt += 1
-    
-    if cnt == len(array):
-        return ans
-    else:
-        return 0
+        for i in graph[x]:
+            if not visit[i] and i in arr:
+                visit[i] = True
+                q.append(i)
+    for i in arr:
+        if not visit[i]:
+            return False
+    return True
 
+MIN = int(1e9)
+for i in range(len(candi)):
+    if connect(candi[i]) and connect(reverse_candi[i]):
+        left = 0
+        right = 0
+        for j in range(len(candi[i])):
+            left += people[candi[i][j]]
+        for j in range(len(reverse_candi[i])):
+            right += people[reverse_candi[i][j]]
+        MIN = min(abs(left - right), MIN)
 
-for i in range(1, n // 2 + 1):
-    visit = [False] * n
-    dfs(0, i)
-
-print(MIN if MIN != 10000 else - 1)
+print(MIN if MIN != int(1e9) else -1)
