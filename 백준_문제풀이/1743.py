@@ -1,41 +1,33 @@
 import sys
-input = sys.stdin.readline
-sys.setrecursionlimit(10000)
-
+sys.setrecursionlimit(10 ** 4)
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
 def dfs(x, y):
-    global cnt
-    cnt += 1
-    visit[x][y] = 1
+    global count
+    count += 1
+    graph[x][y] = 0
+    for d in range(4):
+        nx = x + dx[d]
+        ny = y + dy[d]
 
-    for k in range(4):
-        nx = x + dx[k]
-        ny = y + dy[k]
-    
-        if nx <= 0 or nx > n or ny <= 0 or ny > m:
-            continue
-
-        if s[nx][ny] == 1 and visit[nx][ny] == 0:
-            dfs(nx, ny)
-
+        if 0 <= nx < n and 0 <= ny < m:
+            if graph[nx][ny] == 1:
+                dfs(nx, ny)
 
 n, m, k = map(int, input().split())
 
-s = [[0] * (m+1) for _ in range(n+1)]
-visit = [[0] * (m+1) for _ in range(n+1)]
-
+graph = [[0] * m for _ in range(n)]
 for i in range(k):
     x, y = map(int, input().split())
-    s[x][y] = 1
-           
-ans = []
-for i in range(1, n+1):
-    for j in range(1, m+1):
-        if s[i][j] == 1 and visit[i][j] == 0:
-            cnt = 0
-            dfs(i, j)
-            ans.append(cnt)
+    graph[x - 1][y - 1] = 1
 
-print(max(ans))
+MAX = -1
+for i in range(n):
+    for j in range(m):
+        if graph[i][j] == 1:
+            count = 0
+            dfs(i, j)
+            MAX = max(MAX, count)
+
+print(MAX)
