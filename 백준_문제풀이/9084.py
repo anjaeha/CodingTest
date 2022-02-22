@@ -1,19 +1,15 @@
-import sys
-input = sys.stdin.readline
-
 t = int(input())
 
-for case in range(t):
+for tc in range(t):
     n = int(input())
-    c = list(map(int, input().split()))
-    m = int(input())
+    coin = list(map(int, input().split()))
+    money = int(input())
 
-    dp = [0] * (m+1)
+    dp = [0] * (money + 1)
     dp[0] = 1
 
-    for i in c:
-        for j in range(1, m+1):
+    for i in coin:
+        for j in range(1, money + 1):
             if j - i >= 0:
-                dp[j] += dp[j-i]
-
-    print(dp[m])
+                dp[j] += dp[j - i]
+    print(dp[money])
