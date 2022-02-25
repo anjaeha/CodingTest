@@ -1,62 +1,24 @@
 n, m = map(int, input().split())
-
-check = [False] * n
-num = list(map(int, input().split()))
-num.sort()
+numbers = sorted(list(map(int, input().split())))
 arr = []
-answer = []
+candi = []
+visit = [False] * n
 
-def bfs(cnt):
-    if (cnt == m):
-        answer.append(tuple(arr))
+def dfs(cnt):
+    if cnt == m:
+        candi.append(tuple(arr))
         return
 
     for i in range(n):
-        if(check[i]):
+        if visit[i]:
             continue
 
-        check[i] = True
-        arr.append(num[i])
-        bfs(cnt+1)
+        visit[i] = True
+        arr.append(numbers[i])
+        dfs(cnt + 1)
         arr.pop()
-
-        check[i] = False
-
-bfs(0)
-
-for x in sorted(list(set(answer))):
-    print(*x)
-
-
-"""
-import sys
-input = sys.stdin.readline
-
-n, m = map(int, input().split())
-num = sorted(list(map(int, input().split())))
-arr = []
-answer = []
-used = [False] * n
-
-def dfs(depth):
-    if depth == m:
-        print(*arr)
-        return
-
-    temp = 0
-    for i in range(n):
-        if used[i] or temp == num[i]:
-            continue
-
-        used[i] = True
-        temp = num[i]
-        arr.append(num[i])
-        dfs(depth + 1)
-        arr.pop()
-
-        used[i] = False
-
+        visit[i] = False
 
 dfs(0)
-중복을 확인하는 변수 temp 선언.
-"""
+for i in list(set(candi)):
+    print(*i)

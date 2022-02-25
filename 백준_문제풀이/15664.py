@@ -1,30 +1,26 @@
-import sys
-input = sys.stdin.readline
-
 n, m = map(int, input().split())
-num = sorted(list(map(int, input().split())))
-used = [False] * n
+numbers = sorted(list(map(int, input().split())))
+visit = [False] * n
 arr = []
-answer = []
+candi = []
 
-def dfs(depth):
-    if depth == m:
-        answer.append(tuple(arr))
+def dfs(cnt):
+    if cnt == m:
+        candi.append(tuple(arr))
         return
 
     for i in range(n):
-        if used[i]:
+        if visit[i]:
             continue
-    
-        used[i] = True
-        arr.append(num[i])
-        dfs(depth + 1)
+        visit[i] = True
+        arr.append(numbers[i])
+        dfs(cnt + 1)
         arr.pop()
 
         for j in range(i + 1, n):
-            used[j] = False
+            visit[j] = False
 
 dfs(0)
-
-for x in sorted(set(answer)):
-    print(*x)
+candi = sorted(list(set(candi)))
+for i in candi:
+    print(*i)
