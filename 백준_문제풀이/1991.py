@@ -1,7 +1,7 @@
 n = int(input())
 tree = {}
 
-for i in range(n):
+for _ in range(n):
     root, left, right = input().split()
     tree[root] = [left, right]
 
@@ -18,7 +18,7 @@ def in_order(node):
         return
 
     in_order(tree[node][0])
-    print(node, end='')
+    print(node, end = '')
     in_order(tree[node][1])
 
 def post_order(node):
@@ -27,7 +27,7 @@ def post_order(node):
 
     post_order(tree[node][0])
     post_order(tree[node][1])
-    print(node, end='')
+    print(node, end = '')
 
 pre_order('A')
 print()

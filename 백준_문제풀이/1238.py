@@ -1,45 +1,39 @@
-import sys
-input = sys.stdin.readline
-from heapq import heappush, heappop
+import heapq
 
-n, m, x = map(int, input().split())
-array = [[] for _ in range(n + 1)]
-INF = sys.maxsize
+n, m, k = map(int, input().split()) # N명의 학생, M개의 길, K번째에서 파티
 
-
-for _ in range(m):
-    a, b, c = map(int, input().split())
-    array[a].append((b, c))
+graph = [[] for i in range(n + 1)]
+for i in range(m):
+    start, end, cost = map(int, input().split())
+    graph[start].append((end, cost))
 
 def djikstra(start):
-    distance = [INF] * (n + 1)
+    distance = [int(1e9)] * (n + 1)
+    q = []
+    heapq.heappush(q, (0, start))
     distance[start] = 0
 
-    q = []
-    heappush(q, (0, start))
     while q:
-        dist, now = heappop(q)
-
+        dist, now = heapq.heappop(q)
         if distance[now] < dist:
             continue
 
-        for i in array[now]:
+        for i in graph[now]:
             cost = dist + i[1]
-
             if cost < distance[i[0]]:
                 distance[i[0]] = cost
-                heappush(q, (cost, i[0]))
+                heapq.heappush(q, (cost, i[0]))
+
     return distance
 
-start_x = djikstra(x)
+party = djikstra(k) # K에서 집으로 돌아가는 거리
 
 MAX = -1
 for i in range(1, n + 1):
-    if i == x:
+    if i == k:
         continue
-    temp = 0
-    dis = djikstra(i)
-    temp += start_x[i] + dis[x]
-    MAX = max(MAX, temp)
+
+    dist = djikstra(i)
+    MAX = max(MAX, party[i] + dist[k])
 
 print(MAX)
