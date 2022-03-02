@@ -1,26 +1,20 @@
-import sys
-input = sys.stdin.readline
-
 a, b = map(int, input().split())
-cnt = 1
 
-
-while a != b:
-    if b % 2 == 0:
-        cnt += 1
-        b = b // 2
+count = 1
+while 1:
+    if a == b:
+        break
+    count += 1
+    if b % 10 == 1:
+        b //= 10
     else:
-        b = str(b)
-        b = list(b)
-        if b[-1] != '1':
-            cnt = -1
+        if b % 2 == 0:
+            b //= 2
+        else:
+            count = -1
             break
-        b.pop()
-        b = ''.join(b)
-        if b == '':
-            cnt = -1
-            break
-        b = int(b)
-        cnt += 1
+    if b < a:
+        count = -1
+        break
 
-print(cnt)
+print(count)
