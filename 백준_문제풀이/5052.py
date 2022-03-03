@@ -1,16 +1,14 @@
-def check():
-    for i in range(len(num) - 1):
-        if num[i] == num[i+1][0:len(num[i])]:
-            print('NO')
-            return
-    print('YES')
-
 t = int(input())
 
-for i in range(t):
+for tc in range(t):
     n = int(input())
-    num = []
-    for j in range(n):
-        num.append(input())
-    num.sort()
-    check()    
+    numbers = [input() for _ in range(n)]
+
+    numbers.sort()
+
+    for i in range(n - 1):
+        if numbers[i] == numbers[i + 1][:len(numbers[i])]:
+            print('NO')
+            break
+    else:
+        print('YES')

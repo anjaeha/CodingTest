@@ -1,42 +1,45 @@
+from collections import deque
+import sys
+input=lambda: sys.stdin.readline().rstrip()
 
 t = int(input())
 
-for case in range(t):
-    q = input()
-    arr_len = int(input())
+for tc in range(t):
+    order = list(input())
+    n = int(input())
+    temp = input()
+    temp = temp[1:-1].split(',')
+    numbers = deque()
+    for i in range(len(temp)):
+        if temp[i] != '':
+            numbers.append(temp[i])
 
-    if arr_len == 0:
-        input_arr = input()
-        input_arr = []
-    else:
-        input_arr = list(map(int, input()[1:-1].split(',')))
+    flag = True # 오름차순인지 확인
+    result = True # 중간에 에러가 나는지 확인
 
-    is_re = False
-    is_ok = True
-    front = 0
-    back = 0
-
-    for act in q:
-        try:
-            if act == 'R':
-                is_re = not is_re
-            elif act == 'D' and not is_re:
-                front += 1
-            elif act == 'D' and is_re:
-                back += 1
-        except:
-            is_ok = False
-            print('error')
-            break
-
-    
-    if is_ok:
-        if front + back <= arr_len:
-            if not is_re:
-                input_arr = input_arr[front:arr_len - back]
-                print(str(input_arr).replace(' ',''))
+    for i in order:
+        if i == 'R':
+            flag = not flag
+        elif i == 'D':
+            if numbers:
+                if flag:
+                    numbers.popleft()
+                else:
+                    numbers.pop()
             else:
-                input_arr = input_arr[::-1][back:arr_len - front]
-                print(str(input_arr).replace(' ',''))
+                result = False
+                break
+
+
+    if result: # 에러가 없으면
+        if flag: # 오름차순 일때
+            temp = (list(numbers))
+        else: # 역순일 때
+            temp = (list(numbers)[::-1])
+        if temp:
+            answer = '[' + ','.join(temp) + ']'
         else:
-            print('error')
+            answer = '[]'
+        print(answer)
+    else:
+        print("error")

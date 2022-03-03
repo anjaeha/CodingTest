@@ -1,32 +1,28 @@
-import sys
-input = sys.stdin.readline
-
-tmp = ''
-ans = ''
-ck = False
-
 s = input().strip()
+flag = False
+temp = ''
+answer = ''
 
 for i in s:
     if i == ' ':
-        if not ck:
-            ans += tmp[::-1] + i
-            tmp = ''
+        if flag:
+            answer += i
         else:
-            ans += i
+            answer += temp[::-1] + i
+            temp = ''
     elif i == '<':
-        ck = True
-        ans += tmp[::-1] + i
-        tmp = ''
+        answer += temp[::-1]
+        temp = ''
+        flag = True
+        answer += i
     elif i == '>':
-        ck = False
-        ans += i
+        flag = False
+        answer += i
     else:
-        if ck:
-            ans += i
+        if flag:
+            answer += i
         else:
-            tmp += i
+            temp += i
 
-ans += tmp[::-1]
-print(ans)
-    
+answer += temp[::-1]
+print(answer)
