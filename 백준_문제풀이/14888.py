@@ -1,30 +1,29 @@
-import sys
-input = sys.stdin.readline
+n = int(input()) # 수의 개수
+numbers = list(map(int, input().split()))
+ps, ms, ml, dv = map(int, input().split())
 
-n = int(input())
-number = list(map(int, input().split()))
-plus, sub, mul, div = map(int, input().split())
+MAX = -int(1e9)
+MIN = int(1e9)
 
-def dfs(cnt, result, p, s, m, d):
-    global max_result, min_result
+def dfs(depth, result, plus, minus, mul, div):
+    global MAX, MIN
+    if depth == n:
+        MAX = max(MAX, result)
+        MIN = min(MIN, result)
+        return
 
-    if cnt == n:
-        max_result = max(result, max_result)
-        min_result = min(result, min_result)
+    if plus:
+        dfs(depth + 1, result + numbers[depth], plus - 1, minus, mul, div)
 
-    if p:
-        dfs(cnt + 1, result + number[cnt], p - 1, s, m, d)
-    if s:
-        dfs(cnt + 1, result - number[cnt], p, s - 1, m, d)
-    if m:
-        dfs(cnt + 1, result * number[cnt], p, s, m - 1, d)
-    if d:
-        dfs(cnt + 1, result // number[cnt] if result > 0 else -(-result // number[cnt]), p, s, m, d - 1)
+    if minus:
+        dfs(depth + 1, result - numbers[depth], plus, minus - 1, mul, div)
 
+    if mul:
+        dfs(depth + 1, result * numbers[depth], plus, minus, mul - 1, div)
 
-max_result = -1000000001
-min_result = 1000000001
+    if div:
+        dfs(depth + 1, result // numbers[depth] if result > 0 else -(-result // numbers[depth]), plus, minus, mul, div - 1)
 
-dfs(1, number[0], plus, sub, mul, div)
-print(max_result)
-print(min_result)
+dfs(1, numbers[0], ps, ms, ml, dv)
+print(MAX)
+print(MIN)

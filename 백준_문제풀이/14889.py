@@ -1,43 +1,46 @@
 n = int(input())
 graph = [list(map(int, input().split())) for _ in range(n)]
-member = n // 2
 
-candi_team = []
+numbers = [i for i in range(n)]
+team_A = []
+team_B = []
 temp = []
 visit = [False] * n
-# 팀 나눌수 있는 경우의 수 구하기
-def div_team(depth):
+
+def make_candi(depth):
     global temp
-    if depth == member:
-        candi_team.append(list(temp))
-        return
-    
+    if depth == n // 2:
+        team_A.append(list(temp))
+        tt = []
+        for i in range(n):
+            if i not in temp:
+                tt.append(i)
+        team_B.append(list(tt))
+
     for i in range(n):
         if visit[i]:
             continue
         visit[i] = True
         temp.append(i)
-        div_team(depth + 1)
+        make_candi(depth + 1)
         temp.pop()
         for j in range(i + 1, n):
             visit[j] = False
-div_team(0)
+make_candi(0)
 
-MIN = 1000
-for i in range(len(candi_team)):
-    Ateam = candi_team[i]
-    Bteam = []
-    for i in range(n):
-        if i not in Ateam:
-            Bteam.append(i)
-    A = 0
-    B = 0
-    for i in Ateam:
-        for j in Ateam:
-            A += graph[i][j]
-    for i in Bteam:
-        for j in Bteam:
-            B += graph[i][j]
-    MIN = min(MIN, abs(A - B))
-    
-print(MIN)
+answer = int(1e9)
+
+for i in range(len(team_A)):
+    temp_A = team_A[i]
+    temp_B = team_B[i]
+
+    SUM_A = 0
+    SUM_B = 0
+
+    for i in range(len(temp_A)):
+        for j in range(len(temp_A)):
+            SUM_A += graph[temp_A[i]][temp_A[j]]
+            SUM_B += graph[temp_B[i]][temp_B[j]]
+    answer = min(answer, abs(SUM_A - SUM_B))
+
+print(answer)
