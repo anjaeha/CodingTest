@@ -1,56 +1,46 @@
-gear = [[]] + [list(input()) for _ in range(4)]
-
-k = int(input())
-rotate = [list(map(int, input().split())) for _ in range(k)]
-
-def clock_rotate(arr): # 시계방향으로
-    # 시계방향은, 7번이 1번으로 가면 됨.
-    arr.insert(0, arr.pop())
-
-def anticlock_rotate(arr): # 반시계방향으로
-    # 반시계방향은, 1번이 7번으로 가면 됨.
-    arr.append(arr.pop(0))
-
-def move(idx, dir):
-    global gear
-    right = gear[idx][6]
-    left = gear[idx][2]
-    if dir == 1 and visit[idx] == False:
-        clock_rotate(gear[idx])
-        visit[idx] = True
-    elif dir == -1 and visit[idx] == False:
-        anticlock_rotate(gear[idx])
-        visit[idx] = True
-    else:
+# 시계방향 1, 반시계방향 -1
+def clock(arr, d):
+    if d == 0:
+        return
+    elif d == 1: # 시계 방향
+        arr.insert(0, arr.pop())
+        return
+    elif d == -1: #반시계 방향
+        arr.append(arr.pop(0))
         return
 
-    if idx == 1:
-        if visit[idx + 1] == False:
-            if left != gear[idx + 1][6]:
-                move(idx + 1, -dir)
-    elif idx == 2 or idx == 3:
-        if visit[idx + 1] == False:
-            if left != gear[idx + 1][6]:
-                move(idx + 1, -dir)
-        if visit[idx - 1] == False:
-            if right != gear[idx - 1][2]:
-                move(idx - 1, -dir)
-    elif idx == 4:
-        if visit[idx - 1] == False:
-            if right != gear[idx - 1][2]:
-                move(idx - 1, -dir)
-    
-    return
+gear = [list(input()) for _ in range(4)]
+k = int(input())
+# 2번이 오른쪽, 6번이 왼쪽
 
-for case in range(k):
-    target, dir = rotate[case]
-    visit = [False] * 5
-    move(target, dir)
-    
+for i in range(k):
+    target, dir = map(int, input().split())
+    target -= 1
 
+    move = [0] * 4
+    move[target] = dir
+    right, left = dir, dir
+
+    for j in range(target + 1, 4): # 오른쪽 톱니바퀴 확인
+        if gear[j - 1][2] == gear[j][6]:
+            break
+        else:
+            move[j] = -right
+            right = -right
+
+    for j in range(target - 1, -1, -1): # 왼쪽 톱니바퀴 확인
+        if gear[j + 1][6] == gear[j][2]:
+            break
+        else:
+            move[j] = -left
+            left = -left
+
+    for j in range(4):
+        clock(gear[j], move[j])
+
+
+# N극이면 0, S극이면 1
 result = 0
-for i in range(1, 5):
-    if gear[i][0] == '1':
-        result = result + (2 ** (i - 1))
-
+for i in range(4):
+    result += int(gear[i][0]) * (2 ** i)
 print(result)
