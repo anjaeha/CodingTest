@@ -1,50 +1,49 @@
 from collections import deque
-n, l, r = map(int, input().split())
-graph = [list(map(int, input().split())) for _ in range(n)]
 
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
+n, l, r = map(int, input().split())
+graph = [list(map(int, input().split())) for _ in range(n)]
+
 def bfs(x, y):
-    country = [(x, y)]
+    global board
     q = deque()
     q.append((x, y))
-
+    SUM = [(x, y)]
     while q:
         x, y = q.popleft()
-        for i in range(4):
-            nx = x + dx[i]
-            ny = y + dy[i]
+
+        for d in range(4):
+            nx = x + dx[d]
+            ny = y + dy[d]
 
             if 0 <= nx < n and 0 <= ny < n:
-                if visit[nx][ny] == 0:
-                    if l <= abs(graph[x][y] - graph[nx][ny]) <= r:
-                        visit[nx][ny] = 1
+                if not visit[nx][ny]:
+                    if l <= abs(graph[nx][ny] - graph[x][y]) <= r:
+                        visit[nx][ny] = True
                         q.append((nx, ny))
-                        country.append((nx, ny))
-    return country
+                        SUM.append((nx, ny))
+    count = 0
+    for x, y in SUM:
+        count += graph[x][y]
+    for x, y in SUM:
+        board[x][y] = count // len(SUM)
 
-cnt = 0
+
+idx = 0
 while 1:
-    flag = False
-    visit = [[0] * n for _ in range(n)]
-    for x in range(n):
-        for y in range(n):
-            if visit[x][y] == 0:
-                visit[x][y] = 1
-                temp = bfs(x, y)
-                
-                if len(temp) > 1:
-                    flag = True
-                    idx = len(temp)
-                    tmp = 0
-                    for i in range(idx):
-                        tmp += graph[temp[i][0]][temp[i][1]]
-                    for i in range(idx):
-                        graph[temp[i][0]][temp[i][1]] = tmp // idx
+    visit = [[False] * n for _ in range(n)]
+    board = [i[:] for i in graph]
+    for i in range(n):
+        for j in range(n):
+            if not visit[i][j]:
+                visit[i][j] = True
+                bfs(i, j)
 
-    if not flag:
+    if board == graph:
         break
-    cnt += 1
 
-print(cnt)
+    idx += 1
+    graph = board
+print(idx)
