@@ -1,64 +1,63 @@
+r, c, t = map(int, input().split())
+graph = [list(map(int, input().split())) for _ in range(r)]
 
-n, m, k = map(int, input().split())
-graph = [list(map(int, input().split())) for _ in range(n)]
-
-for i in range(n):
-    if graph[i][0] == -1:
-        airU = i
-        airD = i + 1
+for i in range(r):
+    if graph[i][0] == -1: # 공기청정기 좌표
+        up_x = i
+        down_x = i + 1
+        graph[i][0] = 0
+        graph[i + 1][0] = 0
         break
 
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
 def spread():
-    s = [[0] * m for _ in range(n)]
-    for i in range(n):
-        for j in range(m):
-            if graph[i][j] > 0:
-                temp = 0
+    global graph
+    new_graph = [i[:] for i in graph]
+    for i in range(r):
+        for j in range(c):
+            if graph[i][j] >= 5: # 5 이상일때만 미세먼지 확산됨.
+                cnt = 0
                 for d in range(4):
                     nx = i + dx[d]
                     ny = j + dy[d]
 
-                    if 0 <= nx < n and 0 <= ny < m and not ((nx == airU and ny == 0) or (nx == airD and ny == 0)):
-                        s[nx][ny] += graph[i][j] // 5
-                        temp += graph[i][j] // 5
-                s[i][j] += graph[i][j] - temp
-    s[airU][0] = -1
-    s[airD][0] = -1
-    return s
+                    if 0 <= nx < r and 0 <= ny < c:
+                        if 0 <= graph[nx][ny] and (nx, ny) != (up_x, 0) and (nx, ny) != (down_x, 0):
+                            new_graph[nx][ny] += graph[i][j] // 5
+                            cnt += 1
+                new_graph[i][j] -= graph[i][j] // 5 * cnt
+    graph = new_graph
 
-def move():
-    for i in range(airU - 1, 0, -1):
-        graph[i][0] = graph[i - 1][0]
-    for i in range(m - 1):
-        graph[0][i] = graph[0][i + 1]
-    for i in range(airU):
-        graph[i][m - 1] = graph[i + 1][m - 1]
-    for i in range(m - 1, 1, -1):
-        graph[airU][i] = graph[airU][i - 1]
-    graph[airU][1] = 0
+def activ():
+    # 윗부분 공기순환
+    for x in range(up_x - 1, 0, -1):
+        graph[x][0] = graph[x - 1][0]
+    for y in range(c - 1):
+        graph[0][y] = graph[0][y + 1]
+    for x in range(up_x):
+        graph[x][c - 1] = graph[x + 1][c - 1]
+    for y in range(c - 1, 0, -1):
+        graph[up_x][y] = graph[up_x][y - 1]
 
-    for i in range(airD + 1, n - 1):
-        graph[i][0] = graph[i + 1][0]
-    for i in range(m - 1):
-        graph[n - 1][i] = graph[n - 1][i + 1]
-    for i in range(n - 1, airD, - 1):
-        graph[i][m - 1] = graph[i - 1][m - 1]
-    for i in range(m - 1, 1, -1):
-        graph[airD][i] = graph[airD][i - 1]
-    graph[airD][1] = 0
+    # 아래부분 공기순환
+    for x in range(down_x + 1, r - 1):
+        graph[x][0] = graph[x + 1][0]
+    for y in range(c - 1):
+        graph[r - 1][y] = graph[r - 1][y + 1]
+    for x in range(r - 1, down_x, -1):
+        graph[x][c - 1] = graph[x - 1][c - 1]
+    for y in range(c - 1, 0, -1):
+        graph[down_x][y] = graph[down_x][y - 1]
 
-
-while k:
-    graph = spread()
-    move()
-    k -= 1
+for _ in range(t):
+    spread()
+    activ()
 
 result = 0
-for i in range(n):
-    for j in range(m):
-        if graph[i][j] > 0:
-            result += graph[i][j]
+for i in range(r):
+    for j in range(c):
+        result += graph[i][j]
+
 print(result)
