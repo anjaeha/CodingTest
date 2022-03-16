@@ -77,6 +77,7 @@ for idx in range(len(candi)):
         MIN = 0
         break
     MIN = min(MIN, temp)
+
     if MIN == 0:
         break
 

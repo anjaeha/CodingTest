@@ -82,6 +82,7 @@ while 1:
     if len(graph) > (r - 1) and len(graph[0]) > (c - 1):
         if graph[r - 1][c - 1] == k:
             break
+
     if result > 100:
         result = -1
         break
