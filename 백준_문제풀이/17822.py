@@ -1,86 +1,92 @@
-from copy import deepcopy
+def rotate(x, d, k):
+    global graph
+    for idx in range(x, n + 1, x):
+        temp = graph[idx]
+        for j in range(k): # k칸 돌려라
+            if d == 0:
+                temp.insert(0, temp.pop())
+            elif d == 1:
+                temp.append(temp.pop(0))
+        graph[idx] = temp
+    return
 
-n, m, t = map(int, input().split())
-graph = [[0] * m]
-graph += [list(map(int, input().split())) for _ in range(n)]
-move = [list(map(int, input().split())) for _ in range(t)]
+def remove_number():
+    flag = False
+    visit = [[False] * m for _ in range(n + 1)]
 
-# 돌리는 배열의 x + 1값과 x값 x - 1을 확인하여 연속되는 수가 있으면 지우고, y값을 확인해서 그것도 지움
-# d가 0이면 시계, 1이면 반시계
-for case in range(t):
-    x, d, k = move[case]
-    # 배열 돌리기
     for i in range(1, n + 1):
-        if i % x == 0:
-            if d == 0: # 시계는 N번이 1번으로
-                for j in range(k):
-                    graph[i].insert(0, graph[i].pop())
-            elif d == 1: # 반시계는 1번이 N번으로
-                for j in range(k):
-                    graph[i].append(graph[i].pop(0))
-    
-    # 인접한 곳에 숫자가 같은지 확인
-    s = [[0] * m for _ in range(n + 1)]
-    for i in range(1, n + 1): # x값
-        for j in range(m): # y값
-            if graph[i][j] != 0:
-                if i == 1:
-                    if j < m - 1:
-                        if graph[i][j] == graph[i][j - 1] or graph[i][j] == graph[i][j + 1] or graph[i][j] == graph[i + 1][j]:
-                            s[i][j] = 0
-                        else:
-                            s[i][j] = graph[i][j]
-                    else:
-                        if graph[i][j] == graph[i][j - 1] or graph[i][j] == graph[i][0] or graph[i][j] == graph[i + 1][j]:
-                            s[i][j] = 0
-                        else:
-                            s[i][j] = graph[i][j]
-                elif 1 < i < n:
-                    if j < m - 1:
-                        if graph[i][j] == graph[i][j - 1] or graph[i][j] == graph[i][j + 1] or graph[i][j] == graph[i + 1][j] or graph[i][j] == graph[i - 1][j]:
-                            s[i][j] = 0
-                        else:
-                            s[i][j] = graph[i][j]
-                    else:
-                        if graph[i][j] == graph[i][j - 1] or graph[i][j] == graph[i][0] or graph[i][j] == graph[i + 1][j] or graph[i][j] == graph[i - 1][j]:
-                            s[i][j] = 0
-                        else:
-                            s[i][j] = graph[i][j]
-                elif i == n:
-                    if j < m - 1:
-                        if graph[i][j] == graph[i][j - 1] or graph[i][j] == graph[i][j + 1] or graph[i][j] == graph[i - 1][j]:
-                            s[i][j] = 0
-                        else:
-                            s[i][j] = graph[i][j]
-                    else:
-                        if graph[i][j] == graph[i][j - 1] or graph[i][j] == graph[i][0] or graph[i][j] == graph[i - 1][j]:
-                            s[i][j] = 0
-                        else:
-                            s[i][j] = graph[i][j]
-    
-    # 만약에 중복된게 없으면 평균구해서 +- 1을 해줌
-    if graph == s:
-        temp = 0
-        cnt = 0
+        for j in range(m):
+            if graph[i][j] == 0:
+                continue
+            if i == 1:
+                if graph[i][j] in [graph[i + 1][j], graph[i][(j - 1) % m], graph[i][(j + 1) % m]]:
+                    now = graph[i][j]
+                    visit[i][j] = True
+                    if graph[i + 1][j] == now:
+                        visit[i + 1][j] = True
+                    if graph[i][(j + 1) % m] == now:
+                        visit[i][(j + 1) % m] = True
+                    if graph[i][(j - 1) % m] == now:
+                        visit[i][(j - 1) % m] = True
+                    flag = True
+            elif i == n:
+                if graph[i][j] in [graph[i - 1][j], graph[i][(j - 1) % m], graph[i][(j + 1) % m]]:
+                    now = graph[i][j]
+                    visit[i][j] = True
+                    if graph[i - 1][j] == now:
+                        visit[i - 1][j] = True
+                    if graph[i][(j + 1) % m] == now:
+                        visit[i][(j + 1) % m] = True
+                    if graph[i][(j - 1) % m] == now:
+                        visit[i][(j - 1) % m] = True
+                    flag = True
+            else:
+                if graph[i][j] in [graph[i + 1][j], graph[i - 1][j], graph[i][(j - 1) % m], graph[i][(j + 1) % m]]:
+                    now = graph[i][j]
+                    visit[i][j] = True
+                    if graph[i + 1][j] == now:
+                        visit[i + 1][j] = True
+                    if graph[i - 1][j] == now:
+                        visit[i - 1][j] = True
+                    if graph[i][(j + 1) % m] == now:
+                        visit[i][(j + 1) % m] = True
+                    if graph[i][(j - 1) % m] == now:
+                        visit[i][(j - 1) % m] = True
+                    flag = True
+    if flag:
         for i in range(1, n + 1):
             for j in range(m):
-                if graph[i][j] != 0:
-                    temp += graph[i][j]
-                    cnt += 1
-        # 만약에 합이 0이면 끝내줌
-        if temp == 0:
-            break
-        temp = temp / cnt
-        for i in range(1, n + 1):
-            for j in range(m):
-                if graph[i][j] != 0:
-                    if graph[i][j] > temp:
-                        graph[i][j] -= 1
-                    elif graph[i][j] < temp:
-                        graph[i][j] += 1
+                if visit[i][j]:
+                    graph[i][j] = 0
     else:
-        graph = deepcopy(s)
-    
+        not_zero = []
+        for i in range(1, n + 1):
+            for j in range(m):
+                if graph[i][j] != 0:
+                    not_zero.append(graph[i][j])
+        if not_zero:
+            avg = sum(not_zero) / len(not_zero)
+        else: # 다 0인 상태
+            return
+
+        for i in range(1, n + 1):
+            for j in range(m):
+                if graph[i][j] != 0:
+                    if graph[i][j] < avg:
+                        graph[i][j] += 1
+                    elif graph[i][j] > avg:
+                        graph[i][j] -= 1
+
+    return
+
+
+n, m, t = map(int, input().split()) # 가로M, 세로N
+graph = [[0 for _ in range(m)]] + [list(map(int, input().split())) for _ in range(n)]
+for i in range(t):
+    x, d, k = map(int, input().split()) # x의 배수를, 시계(0) 또는 반시계(1) 방향으로, k칸 돌려라
+    rotate(x, d, k)
+    remove_number()
+
 
 result = 0
 for i in range(1, n + 1):
