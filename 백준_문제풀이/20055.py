@@ -1,56 +1,53 @@
-n, k = map(int, input().split())
-belt = list(map(int, input().split()))
-robot = [0] * n
-# 올리는 위치는 0번, 내리는 위치 n -1, 
+# 1번에서 올리고, N번에서 내림
+# 로봇을 올리거나 움직이면 내구도 -1
+# 벨트 회전 -> 로봇 이동 -> 로봇 올림 -> 내구도 검사
 
-# 컨베이어 벨트 돌아감
-def move():
-    # 2n - 1이 0번으로 이동
-    belt.insert(0, belt.pop())
+def belt_move():
+    down_belt.insert(0, up_belt.pop())
+    up_belt.insert(0, down_belt.pop())
     robot.pop()
-    robot.insert(0, 0)
+    robot.insert(0, False)
 
-# 로봇 움직임
 def robot_move():
-    for i in range(n -2, -1, -1):
-        if robot[i] == 1 and robot[i + 1] == 0:
-            if belt[i + 1] >= 1:
-                robot[i + 1] = 1
-                robot[i] = 0
-                belt[i + 1] -= 1
+    for idx in range(n - 1, -1, -1):
+        if robot[idx]:
+            if idx == n - 1:
+                robot[idx] = False
+            else:
+                if not robot[idx + 1] and up_belt[idx + 1] > 0:
+                    robot[idx + 1] = True
+                    robot[idx] = False
+                    up_belt[idx + 1] -= 1
 
-# 0번에서 로봇 올림
-def put_robot():
-    if belt[0] >= 1:
-        belt[0] -= 1
-        robot[0] = 1
+def raise_robot():
+    if up_belt[0] > 0:
+        robot[0] = True
+        up_belt[0] -= 1
 
-# 0이 K개 있는지 확인
 def check():
     cnt = 0
-    for i in range(2 * n):
-        if belt[i] == 0:
+    for i in range(n):
+        if up_belt[i] == 0:
+            cnt += 1
+        if down_belt[i] == 0:
             cnt += 1
     if cnt >= k:
-        return False
-    return True
+        return True
+    return False
 
-# n - 1에 로봇이 있으면 떨어뜨림
-def fall_robot():
-    if robot[n - 1] == 1:
-        robot[n - 1] = 0
+n, k = map(int, input().split())
+belt = list(map(int, input().split()))
+up_belt = belt[:n]
+down_belt = belt[n:]
+robot = [False] * n
 
-result =  0
+count = 1
 while 1:
-    result += 1
-    move() # 1번 조건
-    fall_robot() # 로봇은 즉시 떨어지기에 확인필요
-    robot_move() # 2번 조건
-    fall_robot() # 로봇은 즉시 떨어지기에 확인필요
-    put_robot() # 3번 조건
-    if check(): # 4번 조건
-        pass
-    else:
+    belt_move()
+    robot_move()
+    raise_robot()
+    if check():
         break
+    count += 1
 
-print(result)
+print(count)
