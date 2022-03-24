@@ -1,185 +1,75 @@
-# 시계방향으로 90도
-# 얼음3개 이상과 인접해있지않은칸 - 1
-# 남아있는 얼음합, 가장 큰 덩어리의 크기
-from copy import deepcopy
 from collections import deque
+
+n, m = map(int, input().split())
+N = 2 ** n
+graph = [list(map(int, input().split())) for _ in range(N)]
+order = list(map(int, input().split()))
 
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
-# 주위에 얼음이 몇개있지 확인
-def check_arouond(x, y):
-    count = 0
-    for i in range(4):
-        nx = x + dx[i]
-        ny = y + dy[i]
-
-        if 0 <= nx < 2 ** n and 0 <= ny < 2 ** n:
-            if temp[nx][ny] > 0:
-                count += 1
-    if count >= 3:
-        return True
-    else:
-        return False
-
-# 가장 큰 사이즈 구하기
-def find_size(x, y):
-    tmp = 1
-    q = deque()
-    q.append((x, y))
-    visit[x][y] = True
-
-    while q:
-        x, y = q.popleft()
-        for i in range(4):
-            nx = x + dx[i]
-            ny = y + dy[i]
-
-            if 0 <= nx < 2 ** n and 0 <= ny < 2 ** n:
-                if graph[nx][ny] > 0 and visit[nx][ny] == False:
-                    q.append((nx, ny))
-                    visit[nx][ny] = True
-                    tmp += 1
-    return tmp
-
-
-
-# n의 크기에 따라 그래프 돌리기
-def turn_graph(l):
-    if l == 0:
+def rotate(size):
+    if size == 0:
         return graph
-    else:
-        s = [[0] * (2 ** n) for _ in range(2 ** n)]
-        for i in range (0, 2 ** n, 2 ** l):
-            for j in range(0, 2 ** n, 2 ** l):
-                for i2 in range(2 ** l):
-                    for j2 in range(2 ** l):
-                        s[i + i2][j + j2] = graph[i + 2 ** l - j2 - 1][j + i2]
-        return s
-        
-
-       
-n, q = map(int, input().split())
-graph = [list(map(int, input().split())) for _ in range(2 ** n)]
-l_num = list(map(int, input().split()))
-
-for case in range(q):
-    temp = turn_graph(l_num[case])
-    graph = deepcopy(temp)
-    for i in range(2 ** n):
-        for j in range(2 ** n):
-            if check_arouond(i, j):
-                continue
-            else:
-                graph[i][j] -= 1
-
-
-visit = [[False] * (2 ** n) for _ in range(2 ** n)]
-result = 0
-siz = 0
-for i in range(2 ** n):
-    for j in range(2 ** n):
-        if graph[i][j] > 0:
-            result += graph[i][j]
-            if visit[i][j] == False:
-                kk = find_size(i, j)
-            if kk > siz:
-                siz = kk
-
-print(result)
-print(siz)
-
-
-"""
-# 파이어스톰 Q번 시전
-# 모든 격자를 시계방향으로 90도 회전, 얼음 있는 칸 3개 이상과 인접해있지 않으면 얼음의 양 1 감소
-# 남아있는 얼음의 합
-# 남아있는 얼음 중 가장 큰 덩어리의 크기
-from collections import deque
-n, k = map(int, input().split())
-graph = [list(map(int ,input().split())) for _ in range(2 ** n)]
-l = list(map(int, input().split()))
-
-dx = [-1, 1, 0, 0]
-dy = [0, 0, -1, 1]
-
-def rotate(idx):
-    if idx == 0:
-        return graph
-    s = [[0] * (2 ** n) for _ in range(2 ** n)]
-    for i in range(0, 2 ** n, 2 ** idx):
-        for j in range(0, 2 ** n, 2 ** idx):
-            for i2 in range(2 ** idx):
-                for j2 in range(2 ** idx):
-                    s[i + i2][j + j2] = graph[i + 2 ** idx - j2 - 1][j + i2]
-    return s
-
+    s = 2 ** size
+    board = [[0] * N for _ in range(N)]
+    for i in range(0, N, s):
+        for j in range(0, N, s):
+            for x in range(s):
+                for y in range(s):
+                    board[i + x][j + y] = graph[i + s - y - 1][j + x]
+    return board
 
 def melt():
-    s = [[0] * (2 ** n) for _ in range(2 ** n)]
-
-    for i in range(2 ** n):
-        for j in range(2 ** n):
-            if graph[i][j] > 0:
-                cnt = 0
+    global graph
+    board = [i[:] for i in graph]
+    for x in range(N):
+        for y in range(N):
+            cnt = 0
+            if graph[x][y] > 0:
                 for d in range(4):
-                    nx = i + dx[d]
-                    ny = j + dy[d]
-
-                    if 0 <= nx < 2 ** n and 0 <= ny < 2 ** n:
+                    nx = x + dx[d]
+                    ny = y + dy[d]
+                    if 0 <= nx < N and 0 <= ny < N:
                         if graph[nx][ny] > 0:
                             cnt += 1
-                if cnt >= 3:
-                    s[i][j] = graph[i][j]
-                else:
-                    s[i][j] = graph[i][j] - 1
-    return s
+                if cnt < 3:
+                    board[x][y] -= 1
+    graph = board
 
-def count():
-    result = 0
-    for i in range(2 ** n):
-        for j in range(2 ** n):
-            if graph[i][j] > 0:
-                result += graph[i][j]
-    return result
+MAX = 0
+def check(): # 가장 큰 덩어리 칸의 개수 구하기
+    global MAX
+    visit = [[False] * N for _ in range(N)]
+    for x in range(N):
+        for y in range(N):
+            if not visit[x][y] and graph[x][y] > 0:
+                q = deque()
+                q.append((x, y))
+                visit[x][y] = True
+                cnt = 1
+                while q:
+                    x, y = q.popleft()
+                    for d in range(4):
+                        nx = x + dx[d]
+                        ny = y + dy[d]
 
-def find(x, y):
-    global visit
-    q = deque()
-    q.append((x, y))
-    length = 1
-    visit[x][y] = True
+                        if 0 <= nx < N and 0 <= ny < N:
+                            if graph[nx][ny] > 0 and not visit[nx][ny]:
+                                cnt += 1
+                                q.append((nx, ny))
+                                visit[nx][ny] = True
+                MAX = max(MAX, cnt)
 
-    while q:
-        x, y = q.popleft()
+for i in range(m):
+    graph = rotate(order[i])
+    melt()
 
-        for d in range(4):
-            nx = x + dx[d]
-            ny = y + dy[d]
+SUM = 0
+for i in range(N):
+    for j in range(N):
+        SUM += graph[i][j]
 
-            if 0 <= nx < 2 ** n and 0 <= ny < 2 ** n:
-                if not visit[nx][ny] and graph[nx][ny] > 0:
-                    q.append((nx, ny))
-                    length += 1
-                    visit[nx][ny] = True
-    return length
-
-
-
-for case in range(k):
-    graph = rotate(l[case])
-    graph = melt()
-
-answer1 = count()
-print(answer1)
-
-answer2 = 0
-visit = [[False] * (2 ** n) for _ in range(2 ** n)]
-for i in range(2 ** n):
-    for j in range(2 ** n):
-        if graph[i][j] > 0 and not visit[i][j]:
-            temp = find(i, j)
-            if answer2 < temp:
-                answer2 = temp
-print(answer2)
-"""
+check()
+print(SUM)
+print(MAX)
