@@ -1,106 +1,108 @@
-#적어도 하나의 일반 블록, (같은 색이어야함.)
-# 검은색 블록X 무지개블록은 숫자 상관 X
-# 블록의 개수는 2이상, 상하좌우로 이어져야함.
-# 기준 블록은 무지개블록이 아닌 블록 중 X, Y 값이 작은거로
-# 1. 가장 큰 블록그룹 찾고 > 무지개 블록 수가 많은 그룹 > X큰 > Y큰
-# 2. 1의 블록 제거, 제거한 블록의 수 ** 2 점수 획득
-# 3. 중력 작용,
-# 4. 90% 반시계로 회전
-# 5. 중력 작용,
-# 중력이 작용하면, 검은색 블록 제외하고 밑으로 이동,
-
-import sys
+# 크기가 가장 큰 블록 -> 무지개 블록의 수가 많은 -> 행, 열이 가장 큰
+# 중력 작용 -> 반시계회전 -> 중력 작용
+# 검은색 -1, 무지개 0,
 from collections import deque
-input = sys.stdin.readline
-
-n, m = map(int, input().split())
-graph = [list(map(int, input().split())) for _ in range(n)]
 
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
-result = 0
+n, m = map(int, input().split())
+graph = [list(map(int, input().split())) for _ in range(n)]
 
-def bfs(x, y, color):
+def make_candi():
+    visit = [[False] * n for _ in range(n)]
+    candi = []
+    for i in range(n):
+        for j in range(n):
+            if graph[i][j] > 0 and not visit[i][j]:
+                visit[i][j] = True
+                q = deque()
+                q.append((i, j))
+                arr = [(i, j)] # 같은 색상의 블록
+                rainbow = [] # 무지개 블록
+                while q:
+                    x, y = q.popleft()
+                    for d in range(4):
+                        nx = x + dx[d]
+                        ny = y + dy[d]
+
+                        if 0 <= nx < n and 0 <= ny < n:
+                            if not visit[nx][ny] and (graph[nx][ny] == 0 or graph[nx][ny] == graph[i][j]):
+                                visit[nx][ny] = True
+                                q.append((nx, ny))
+                                if graph[nx][ny] == graph[i][j]:
+                                    arr.append((i, j))
+                                if graph[nx][ny] == 0:
+                                    rainbow.append((nx, ny))
+                for x, y in rainbow:
+                    visit[x][y] = False
+                arr.sort(key = lambda x : (x[0], x[1]))
+                candi.append((len(arr) + len(rainbow), len(rainbow), arr[0][0], arr[0][1]))
+
+    if candi:
+        candi.sort(key = lambda x : (-x[0], -x[1], -x[2], -x[3]))
+    else:
+        return False
+
+    if candi[0][0] >= 2: # 블록의 개수는 2보다 크거나 같아야 함.
+        return candi[0]
+    else:
+        return False
+
+def boom(arr):
+    i, j = arr[2], arr[3]
     q = deque()
-    q.append((x, y))
-    
-    block_cnt, rainbow_cnt = 1, 0
-    blocks, rainbows = [[x, y]], []
-
+    q.append((i, j))
+    now = graph[i][j]
+    graph[i][j] = -2 # 터진공간을 -2로 처리
     while q:
         x, y = q.popleft()
-        for i in range(4):
-            nx = x + dx[i]
-            ny = y + dy[i]
+        for d in range(4):
+            nx = x + dx[d]
+            ny = y + dy[d]
 
             if 0 <= nx < n and 0 <= ny < n:
-                if visit[nx][ny] == False:
-                    if graph[nx][ny] == color or graph[nx][ny] == 0:
-                        if graph[nx][ny] == 0:
-                            rainbow_cnt += 1
-                            rainbows.append((nx, ny))
-                        else:
-                            blocks.append((nx, ny))
-                        q.append((nx ,ny))
-                        block_cnt += 1
-                        visit[nx][ny] = True
+                if graph[nx][ny] == 0 or graph[nx][ny] == now:
+                    graph[nx][ny] = -2
+                    q.append((nx, ny))
 
-    for x, y in rainbows:
-        visit[x][y] = False
 
-    return [block_cnt, rainbow_cnt, blocks + rainbows]
-
-    
-
-def gravity(arr):
-    for i in range(n -2, -1, -1):
-        for j in range(n):
-            if arr[i][j] > -1:
-                r = i
+def gravity():
+    for y in range(n):
+        for x in range(n - 1, -1, -1):
+            if graph[x][y] == -2: # 빈 공간이면
+                nx, ny = x, y
                 while 1:
-                    if 0 <= r + 1 < n and arr[r+1][j] == -2:
-                        arr[r+1][j] = arr[r][j]
-                        arr[r][j] = -2
-                        r += 1
-                    else:
+                    if nx - 1 < 0:
                         break
+                    if graph[nx - 1][y] == -2:
+                        nx = nx - 1
+                    else:
+                        nx = nx - 1
+                        break
+                if graph[nx][ny] == -1:
+                    continue
+                else:
+                    graph[x][y] = graph[nx][ny]
+                    graph[nx][ny] = -2
 
-
-def rotate(arr):
-    roate_graph = [[0] * n for _ in range(n)]
+def rotate():
+    global graph
+    board = [[-3] * n for _ in range(n)]
     for i in range(n):
         for j in range(n):
-            roate_graph[i][j] = graph[j][n - i - 1]
+            board[i][j] = graph[j][n - i - 1]
+    graph = board
 
-    return roate_graph
-
-
+result = 0
 while 1:
-    visit = [[False] * n for _ in range(n)]
-    block = []
-    for i in range(n):
-        for j in range(n):
-            if 0 < graph[i][j] <= m and not visit[i][j]:
-                visit[i][j] = 1
-                block_info = bfs(i, j, graph[i][j])
-                if block_info[0] >= 2:
-                    block.append(block_info)
-
-    
-
-    if not block:
+    candi = make_candi()
+    if not candi:
         break
-    block.sort(reverse=True)
-
-    break_block = block[0][2]
-    result += len(break_block) ** 2
-    for x, y in break_block:
-        graph[x][y] = -2
-
-
-    gravity(graph)
-    graph = rotate(graph)
-    gravity(graph)
+    result += candi[0] ** 2
+    boom(candi)
+    gravity()
+    rotate()
+    gravity()
 
 print(result)
