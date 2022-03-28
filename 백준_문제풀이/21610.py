@@ -1,145 +1,60 @@
-import sys
-from collections import deque
-input = sys.stdin.readline
+# 모든 구름이 d방향으로 s칸 이동
+# 비가 내려 칸 바구니에 물의 양 + 1
+# 구름 사라짐
+# 방금 증가한 칸에서 물복사 -> 이웃한 대각선 바구니에 물이 있는 수만큼 물의 양 증가 (범위 벗어나지 않음)
+# 바구니의 물이 2이상이면 구름이 생기고, 물의 양 -2, 구름이 사라진곳에서는 생기지 않음
 
 dx = [0, 0, -1, -1, -1, 0, 1, 1, 1]
 dy = [0, -1, -1, 0, 1, 1, 1, 0, -1]
 
-copydx = [-1, -1, 1, 1]
-copydy = [-1, 1, -1, 1]
-
 n, m = map(int, input().split())
 graph = [list(map(int, input().split())) for _ in range(n)]
-move = [list(map(int, input().split())) for _ in range(m)]
+dir = [list(map(int, input().split())) for _ in range(m)] # 방향d, 거리s
 
-cloud = [[n-1, 0], [n-1, 1], [n-2, 0], [n-2, 1]]
+cloud = [(n - 1, 0), (n - 1, 1), (n - 2, 0), (n - 2, 1)] # 비바라기하면 (n, 1), (n, 2), (n - 1, 1), (n - 1, 2)에 비구름
 
-def makeCloud(graph):
-    cloud = []
-    for i in range(n):
-        for j in range(n):
-            if graph[i][j] >= 2 and visit[i][j] == False:
-                graph[i][j] -= 2
-                cloud.append((i, j))
-
-    return cloud
-
-for case in range(m):
-    visit = [[False] * n for _ in range(n)]
-    dir, dis = move[case]
-    nx = dx[dir]
-    ny = dy[dir]
-
-    newCloud = []
-    for cloud_x, cloud_y in cloud:
-        cloud_x = (cloud_x + nx * dis) % n
-        cloud_y = (cloud_y + ny * dis) % n
-        
-        graph[cloud_x][cloud_y] += 1
-        visit[cloud_x][cloud_y] = True
-        newCloud.append((cloud_x, cloud_y))
-
-
-    for x, y in newCloud:
-        cnt = 0
-        for i in range(4):
-            searchx = x + copydx[i]
-            searchy = y + copydy[i]
-
-            if 0 <= searchx < n and 0 <= searchy < n:
-                if graph[searchx][searchy] > 0:
-                    cnt += 1
-
-        graph[x][y] += cnt
-
-    cloud = makeCloud(graph)
-    
-
-result = 0
-for i in range(n):
-    for j in range(n):
-        result += graph[i][j]
-
-print(result)
-
-
-"""
-# 모든 구름이 d방향으로 s칸 이동
-# 구름에서 비가 내려서 물의 양이 1 증가
-# 구름이 사라짐
-# 물복사버그 마법 -> 대각선 방향으로 거리가 1인 칸에 물이 있는 바구니의 수만큼 물 증가
-# 바구니에 저장된 물의 양이 2이상인 모든 칸에 구름이 생김, 물의 양 2감소, 구름이 사라진 칸에서는 불가
-
-dx8 = [0, 0, -1, -1, -1, 0, 1, 1, 1]
-dy8 = [0, -1, -1, 0, 1, 1, 1, 0, -1]
-
-dx4 = [-1, -1, 1, 1]
-dy4 = [-1, 1, -1, 1]
-
-def move(arr, d, s):
-    com = []
+def cloud_move(arr, d, s): # 구름, 방향, 거리
+    new_cloud = []
     for x, y in arr:
-        nx = x + (dx8[d] * s)
-        ny = y + (dy8[d] * s)
+        nx = (x + dx[d] * s) % n
+        ny = (y + dy[d] * s) % n
 
-        com.append((nx % n, ny % n))
-    return com
-
+        new_cloud.append((nx, ny))
+    return new_cloud
 
 def rain(arr):
     for x, y in arr:
         graph[x][y] += 1
-    return
 
-
-def copy_water(arr):
-    global graph
-    s = [item[:] for item in graph]
+def water_copy(arr):
     for x, y in arr:
-        cnt = 0
-        for d in range(4):
-            nx = x + dx4[d]
-            ny = y + dy4[d]
-
+        for d in range(2, 9, 2):
+            nx = x + dx[d]
+            ny = y + dy[d]
             if 0 <= nx < n and 0 <= ny < n:
                 if graph[nx][ny] > 0:
-                    cnt += 1
-        s[x][y] += cnt
-    graph = s
-
+                    graph[x][y] += 1
 
 def make_cloud(arr):
-    temp = []
-    for i in range(n):
-        for j in range(n):
-            if (i, j) not in arr:
-                if graph[i][j] >= 2:
-                    graph[i][j] -= 2
-                    temp.append((i, j))
-    return temp
+    new_cloud = []
+    for x in range(n):
+        for y in range(n):
+            if graph[x][y] >= 2:
+                if (x, y) not in arr:
+                    new_cloud.append((x, y))
+                    graph[x][y] -= 2
+    return new_cloud
 
-
-n, m = map(int, input().split())
-graph = [list(map(int, input().split())) for _ in range(n)]
-cloud_move = [list(map(int, input().split())) for _ in range(m)]
-
-cloud = [(n - 1, 0), (n - 2, 0), (n - 1, 1), (n - 2, 1)]
-
-
-for case in range(m):
-    cur = cloud_move[case]
-    cloud = move(cloud, cur[0], cur[1])
+for d, s in dir:
+    cloud = cloud_move(cloud, d, s)
     rain(cloud)
-    copy_water(cloud)
+    water_copy(cloud)
     cloud = make_cloud(cloud)
-
 
 result = 0
 for i in range(n):
     for j in range(n):
-        if graph[i][j]:
+        if graph[i][j] > 0:
             result += graph[i][j]
 
-
 print(result)
-"""
