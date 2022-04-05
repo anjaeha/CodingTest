@@ -1,21 +1,13 @@
 n = int(input())
 graph = [list(map(int, input().split())) for _ in range(n)]
 
-numbers = [i for i in range(n)]
-team_A = []
-team_B = []
-temp = []
 visit = [False] * n
-
+candi = []
+temp = []
 def make_candi(depth):
-    global temp
     if depth == n // 2:
-        team_A.append(list(temp))
-        tt = []
-        for i in range(n):
-            if i not in temp:
-                tt.append(i)
-        team_B.append(list(tt))
+        candi.append(list(temp))
+        return
 
     for i in range(n):
         if visit[i]:
@@ -28,19 +20,23 @@ def make_candi(depth):
             visit[j] = False
 make_candi(0)
 
-answer = int(1e9)
+def score(arr):
+    stat = 0
+    for x in arr:
+        for y in arr:
+            stat += graph[x][y]
+    return stat
 
-for i in range(len(team_A)):
-    temp_A = team_A[i]
-    temp_B = team_B[i]
+result = int(1e9)
+for idx in range(len(candi)):
+    right = candi[idx]
+    left = []
+    for i in range(n):
+        if i not in right:
+            left.append(i)
+    # 두 팀으로 나눔
+    r_score = score(right)
+    l_score = score(left)
+    result = min(result, abs(r_score - l_score))
 
-    SUM_A = 0
-    SUM_B = 0
-
-    for i in range(len(temp_A)):
-        for j in range(len(temp_A)):
-            SUM_A += graph[temp_A[i]][temp_A[j]]
-            SUM_B += graph[temp_B[i]][temp_B[j]]
-    answer = min(answer, abs(SUM_A - SUM_B))
-
-print(answer)
+print(result)
