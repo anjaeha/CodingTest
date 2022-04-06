@@ -1,17 +1,18 @@
 n, m = map(int, input().split())
 graph = [list(map(int, input().split())) for _ in range(n)]
 
-# 상, 우, 하, 좌
 dx = [-1, 0, 1, 0]
 dy = [0, 1, 0, -1]
 
-direct = [[], [[0], [1], [2], [3]], [[0, 2], [1, 3]], [[0, 1], [1, 2], [2, 3], [3, 0]], [[0, 1, 2], [1, 2, 3], [2, 3, 0], [3, 0, 1]], [[0, 1, 2, 3]]]
+dir = [[], [[0], [1], [2], [3]], [[0, 2], [1, 3]], [[0, 1], [1, 2], [2, 3], [3, 0]], [[0, 1, 2], [1, 2, 3], [2, 3, 0], [3, 0, 1]], [[0, 1, 2, 3]]]
 
-camera = []
+cctv_pos = []
+cctv_cnt = 0
 for i in range(n):
     for j in range(m):
         if graph[i][j] in [1,2,3,4,5]:
-            camera.append((i, j, graph[i][j]))
+            cctv_pos.append((i, j, graph[i][j]))
+            cctv_cnt += 1
 
 def fill(x, y, d):
     for i in d:
@@ -28,30 +29,24 @@ def fill(x, y, d):
                     break
             else:
                 break
-
-
-
-MIN = int(1e9)
+result = int(1e9)
 def dfs(depth):
-    global MIN, graph
-    if depth == len(camera):
-        MIN = min(MIN, check())
+    global result, graph
+    if depth == cctv_cnt:
+        cnt = 0
+        for i in range(n):
+            for j in range(m):
+                if graph[i][j] == 0:
+                    cnt += 1
+        result = min(result, cnt)
         return
 
     temp_graph = [i[:] for i in graph]
-    x, y, dir = camera[depth]
-    for i in direct[dir]:
+    x, y, d = cctv_pos[depth]
+    for i in dir[d]:
         fill(x, y, i)
         dfs(depth + 1)
         graph = [i[:] for i in temp_graph]
 
-def check():
-    cnt = 0
-    for i in range(n):
-        for j in range(m):
-            if graph[i][j] == 0:
-                cnt += 1
-    return cnt
-
 dfs(0)
-print(MIN)
+print(result)

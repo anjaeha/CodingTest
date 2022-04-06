@@ -1,46 +1,39 @@
-# 시계방향 1, 반시계방향 -1
-def clock(arr, d):
-    if d == 0:
-        return
-    elif d == 1: # 시계 방향
+gears = [list(input()) for _ in range(4)]
+m = int(input())
+dir = [list(map(int, input().split())) for _ in range(m)]
+
+def rotate(arr, d):
+    if d == 1: # 시계방향으로 회전
         arr.insert(0, arr.pop())
-        return
-    elif d == -1: #반시계 방향
+    elif d == -1:
         arr.append(arr.pop(0))
-        return
 
-gear = [list(input()) for _ in range(4)]
-k = int(input())
-# 2번이 오른쪽, 6번이 왼쪽
+def move(pos, d):
+    visit[pos] = True
+    left, right = gears[pos][6], gears[pos][2]
+    rotate(gears[pos], d)
 
-for i in range(k):
-    target, dir = map(int, input().split())
-    target -= 1
+    if pos == 0:
+        if right != gears[1][6] and not visit[1]:
+            move(1, -d)
+    elif pos == 3:
+        if left != gears[2][2] and not visit[2]:
+            move(2, -d)
+    else:
+        if right != gears[pos + 1][6] and not visit[pos + 1]:
+            move(pos + 1, -d)
+        if left != gears[pos - 1][2] and not visit[pos - 1]:
+            move(pos - 1, -d)
 
-    move = [0] * 4
-    move[target] = dir
-    right, left = dir, dir
+for idx in range(m):
+    pos, d = dir[idx]
+    pos -= 1
+    visit = [False] * 4
+    move(pos, d)
 
-    for j in range(target + 1, 4): # 오른쪽 톱니바퀴 확인
-        if gear[j - 1][2] == gear[j][6]:
-            break
-        else:
-            move[j] = -right
-            right = -right
-
-    for j in range(target - 1, -1, -1): # 왼쪽 톱니바퀴 확인
-        if gear[j + 1][6] == gear[j][2]:
-            break
-        else:
-            move[j] = -left
-            left = -left
-
-    for j in range(4):
-        clock(gear[j], move[j])
-
-
-# N극이면 0, S극이면 1
 result = 0
 for i in range(4):
-    result += int(gear[i][0]) * (2 ** i)
+    if int(gears[i][0]):
+        result += 2 ** i
+
 print(result)
