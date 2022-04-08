@@ -1,49 +1,54 @@
 r, c, m = map(int, input().split())
+graph = [[0] * c for _ in range(r)]
 
-# 0, 위, 아래, 오른쪽, 왼쪽
 dx = [-1, 1, 0, 0]
 dy = [0, 0, 1, -1]
 
-fish = {}
 for _ in range(m):
     x, y, s, d, z = map(int, input().split())
-    fish[x - 1, y - 1] = [s, d - 1, z] # 속력, 이동방향, 크기
+    if (d - 1) in [0, 1]: # 위아래로 움직이는 경우에는
+        graph[x - 1][y - 1] = [s % (r * 2 - 2), d - 1, z] # 속력 방향 크기
+    elif (d - 1) in [2, 3]: # 좌우로 움직이는 경우에는
+        graph[x - 1][y - 1] = [s % (c * 2 -  2), d - 1, z]
 
-def fish_move():
-    global fish
-    new_fish = {}
-    for rc, val in fish.items():
-        x, y, s, d, z = rc[0], rc[1], val[0], val[1], val[2]
-        if d == 0 or d == 1:  # 상 하 일때 최종 몇번 움직여야하는지 계산해줌
-            s = s % (r * 2 - 2)
-        elif d == 2 or d == 3: # 좌 우 일때
-            s = s % (c * 2 - 2)
-        for i in range(s):
-            nx = x + dx[d]
-            ny = y + dy[d]
-            if nx < 0 or nx >= r or ny < 0 or ny >= c: # 벽에 부딪히면
-                d ^= 1 # 방향 반대로 바꾸고 다시 한칸 이동해줌
-                nx = x + dx[d]
-                ny = y + dy[d]
-            x, y = nx, ny
-        if (x, y) in new_fish:
-            if new_fish[x, y][2] > z:
-                continue
-            else:
-                new_fish[x, y] = [s, d, z]
-        else:
-            new_fish[x, y] = [s, d, z]
-
-    fish = new_fish
-
-# 낚시, 상어이동 순서로 진행
 result = 0
-for tc in range(c):
+def fishing(idx):
+    global result
     for i in range(r):
-        if (i, tc) in fish:
-            result += fish[i, tc][2] # 크기 더해주고
-            del fish[i, tc]
-            break
-    fish_move()
+        if graph[i][idx] != 0:
+            result += graph[i][idx][2]
+            graph[i][idx] = 0
+            return
+
+def shark_move():
+    global graph
+    new_graph = [[0] * c for _ in range(r)]
+    for x in range(r):
+        for y in range(c):
+            if graph[x][y] != 0:
+                s, d, z = graph[x][y] # 속력 방향 크기
+                sx, sy = x, y
+                for i in range(s):
+                    nx = sx + dx[d]
+                    ny = sy + dy[d]
+                    if 0 <= nx < r and 0 <= ny < c:
+                        pass
+                    else:
+                        d ^= 1
+                        nx = sx + dx[d]
+                        ny = sy + dy[d]
+                    sx, sy = nx, ny
+                if new_graph[sx][sy]:
+                    if new_graph[sx][sy][2] > z:
+                        pass
+                    else:
+                        new_graph[sx][sy] = [s, d, z]
+                else:
+                    new_graph[sx][sy] = [s, d, z]
+    graph = new_graph
+
+for idx in range(c):
+    fishing(idx)
+    shark_move()
 
 print(result)
