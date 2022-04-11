@@ -1,3 +1,9 @@
+n, m, t = map(int, input().split())
+graph = [[]] + [list(map(int, input().split())) for _ in range(n)]
+
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
+
 def rotate(x, d, k):
     global graph
     for idx in range(x, n + 1, x):
@@ -11,85 +17,49 @@ def rotate(x, d, k):
     return
 
 def remove_number():
-    flag = False
-    visit = [[False] * m for _ in range(n + 1)]
+    global graph
+    copy_graph = [i[:] for i in graph]
+    for x in range(1, n + 1):
+        for y in range(m):
+            for d in range(4):
+                if d == 0 and x == 1:
+                    continue
+                if d == 1 and x == n:
+                    continue
+                nx = x + dx[d]
+                ny = (y + dy[d]) % m
+                if 1 <= nx < n + 1 and 0 <= ny < m:
+                    if graph[x][y] == graph[nx][ny]:
+                        copy_graph[nx][ny] = 0
+                        copy_graph[x][y] = 0
 
-    for i in range(1, n + 1):
-        for j in range(m):
-            if graph[i][j] == 0:
-                continue
-            if i == 1:
-                if graph[i][j] in [graph[i + 1][j], graph[i][(j - 1) % m], graph[i][(j + 1) % m]]:
-                    now = graph[i][j]
-                    visit[i][j] = True
-                    if graph[i + 1][j] == now:
-                        visit[i + 1][j] = True
-                    if graph[i][(j + 1) % m] == now:
-                        visit[i][(j + 1) % m] = True
-                    if graph[i][(j - 1) % m] == now:
-                        visit[i][(j - 1) % m] = True
-                    flag = True
-            elif i == n:
-                if graph[i][j] in [graph[i - 1][j], graph[i][(j - 1) % m], graph[i][(j + 1) % m]]:
-                    now = graph[i][j]
-                    visit[i][j] = True
-                    if graph[i - 1][j] == now:
-                        visit[i - 1][j] = True
-                    if graph[i][(j + 1) % m] == now:
-                        visit[i][(j + 1) % m] = True
-                    if graph[i][(j - 1) % m] == now:
-                        visit[i][(j - 1) % m] = True
-                    flag = True
-            else:
-                if graph[i][j] in [graph[i + 1][j], graph[i - 1][j], graph[i][(j - 1) % m], graph[i][(j + 1) % m]]:
-                    now = graph[i][j]
-                    visit[i][j] = True
-                    if graph[i + 1][j] == now:
-                        visit[i + 1][j] = True
-                    if graph[i - 1][j] == now:
-                        visit[i - 1][j] = True
-                    if graph[i][(j + 1) % m] == now:
-                        visit[i][(j + 1) % m] = True
-                    if graph[i][(j - 1) % m] == now:
-                        visit[i][(j - 1) % m] = True
-                    flag = True
-    if flag:
+    if graph == copy_graph:
+        SUM = 0
+        cnt = 0
         for i in range(1, n + 1):
             for j in range(m):
-                if visit[i][j]:
-                    graph[i][j] = 0
-    else:
-        not_zero = []
-        for i in range(1, n + 1):
-            for j in range(m):
-                if graph[i][j] != 0:
-                    not_zero.append(graph[i][j])
-        if not_zero:
-            avg = sum(not_zero) / len(not_zero)
-        else: # 다 0인 상태
-            return
+                if graph[i][j] > 0:
+                    SUM += graph[i][j]
+                    cnt += 1
 
         for i in range(1, n + 1):
             for j in range(m):
-                if graph[i][j] != 0:
-                    if graph[i][j] < avg:
-                        graph[i][j] += 1
-                    elif graph[i][j] > avg:
+                if graph[i][j] > 0:
+                    if graph[i][j] > (SUM / cnt):
                         graph[i][j] -= 1
+                    elif graph[i][j] < (SUM / cnt):
+                        graph[i][j] += 1
+    else:
+        graph = copy_graph
 
-    return
-
-
-n, m, t = map(int, input().split()) # 가로M, 세로N
-graph = [[0 for _ in range(m)]] + [list(map(int, input().split())) for _ in range(n)]
-for i in range(t):
-    x, d, k = map(int, input().split()) # x의 배수를, 시계(0) 또는 반시계(1) 방향으로, k칸 돌려라
+for _ in range(t):
+    x, d, k = map(int, input().split())
     rotate(x, d, k)
     remove_number()
-
 
 result = 0
 for i in range(1, n + 1):
     for j in range(m):
         result += graph[i][j]
+
 print(result)
