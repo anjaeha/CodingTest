@@ -33,7 +33,6 @@ for idx, val in number.items():
     candi.sort(key = lambda x : (-x[0], -x[1], x[2], x[3]))
     graph[candi[0][2]][candi[0][3]] = idx
 
-
 result = 0
 for i in range(n):
     for j in range(n):
