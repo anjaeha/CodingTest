@@ -98,7 +98,6 @@ for _ in range(m):
     crush(d, s)
     ball_boom()
 
-
 result = 0
 for i in range(4):
     result += marble[i] * i
