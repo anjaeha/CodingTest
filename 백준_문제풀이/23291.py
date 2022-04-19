@@ -1,115 +1,96 @@
-# 물고기가 가장 적은 모든 어항에 + 1
-# 두개 이상 쌓인 모든 블록을 공중 부양해서 90회전
-# 물고기 수 조절 => 물고기 수의 차이 // 5 만큼 이동
-# N / 2의 왼쪽블록을 180도 회전(역순)하여 오른쪽 블록에 올리기 X 2번
-# 가장 많이 들어있는 물고기 - 가장 적게 들어있는 물고기 <= K가 되기 위해 몇번을 하는지 구하기
 from collections import deque
 from copy import deepcopy
-n, k = map(int, input().split())
-graph = deque(deque() for _ in range(n))
-graph[0].extend(list(map(int, input().split())))
+n, k = map(int, input().split()) # N마리의 물고기, 최대 - 최소가 K 이하
+graph = list(map(int, input().split()))
 
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
-def add_fish():
-    MIN = min(graph[0])
+def min_fish():
+    MIN = min(graph)
     for i in range(n):
-        if graph[0][i] == MIN:
-            graph[0][i] += 1
-
-def replace_bowl():
-    global graph
-    graph[1].append(graph[0].popleft()) # 첫번째는 직접 올려줌
-
-    while 1:
-        cnt = 0
-        for i in range(len(graph)):
-            if graph[i]:
-                cnt += 1
-                now = len(graph[i])
-            else:
-                break
-        if len(graph[0]) - now < cnt:
-            break
-        for i in range(len(graph[1]), 0, -1):
-            arr = []
-            for j in range(cnt):
-                arr.append(graph[j].popleft())
-            graph[i].extend(arr)
-
-    new_graph = deepcopy(graph)
-    for x in range(len(graph)):
-        for y in range(len(graph[x])):
-            if graph[x] and y <= len(graph[x]):
-
-                for d in range(4):
-                    nx = x + dx[d]
-                    ny = y + dy[d]
-                    if 0 <= nx < len(graph) and 0 <= ny < len(graph[nx]):
-                        if graph[x][y] > graph[nx][ny]:
-                            new_graph[nx][ny] += (graph[x][y] - graph[nx][ny]) // 5
-                            new_graph[x][y] -= (graph[x][y] - graph[nx][ny]) // 5
-    graph = new_graph
-
-    arr = []
-    while graph[0]:
-        for i in range(len(graph)):
-            if graph[i]:
-                arr.append(graph[i].popleft())
-    graph[0].extend(arr)
-
-    arr = []
-    for i in range(n // 2):
-        arr.append(graph[0].popleft())
-    graph[1].extend(arr[::-1])
-
-
-    arr =[[] for _ in range(2)]
-    for i in range(2):
-        for j in range(n // 4):
-            arr[i].append(graph[i].popleft())
-
-    new_arr = [i[:] for i in arr]
-    for x in range(len(arr)):
-        for y in range(len(arr[0])):
-            new_arr[x][y] = arr[len(arr) - x - 1][len(arr[0]) - 1 - y]
-
-    for i in range(len(new_arr)):
-        graph[2 + i].extend(new_arr[i])
-
-    new_graph = deepcopy(graph)
-    for x in range(len(graph)):
-        for y in range(len(graph[x])):
-            if graph[x] and y <= len(graph[x]):
-
-                for d in range(4):
-                    nx = x + dx[d]
-                    ny = y + dy[d]
-                    if 0 <= nx < len(graph) and 0 <= ny < len(graph[nx]):
-                        if graph[x][y] > graph[nx][ny]:
-                            new_graph[nx][ny] += (graph[x][y] - graph[nx][ny]) // 5
-                            new_graph[x][y] -= (graph[x][y] - graph[nx][ny]) // 5
-    graph = new_graph
-
-    arr = []
-    while graph[0]:
-        for i in range(len(graph)):
-            if graph[i]:
-                arr.append(graph[i].popleft())
-    graph[0].extend(arr)
+        if graph[i] == MIN:
+            graph[i] += 1
 
 def check():
-    if max(graph[0]) - min(graph[0]) <= k:
+    MIN = min(graph)
+    MAX = max(graph)
+    if MAX - MIN <= k:
         return True
     return False
 
+
+def bowl_organ():
+    q = [deque() for _ in range(10)]
+    q[0].extend(graph)
+    q[1].append(q[0].popleft())
+    while 1:
+        count = 0
+        for idx in range(len(q)):
+            if q[idx]:
+                count += 1
+            else:
+                break
+        if len(q[0]) - len(q[1]) < count:
+            break
+
+        for idx in range(len(q[1]), 0, -1):
+            for i in range(count):
+                q[idx].append(q[i].popleft())
+    return q
+
+def fish_control(q):
+    copy_q = deepcopy(q)
+    for x in range(len(q)):
+        for y in range(len(q[x])):
+            for d in range(4):
+                nx = x + dx[d]
+                ny = y + dy[d]
+                if 0 <= nx < len(q) and 0 <= ny < len(q[nx]):
+                    if q[x][y] - q[nx][ny] >= 5:
+                        copy_q[x][y] -= (q[x][y] - q[nx][ny]) // 5
+                        copy_q[nx][ny] += (q[x][y] - q[nx][ny]) // 5
+    return copy_q
+
+def arrange(q):
+    arr = []
+    count = 0
+    for idx in range(len(q)):
+        if q[idx]:
+            count += 1
+        else:
+            break
+
+    for idx in range(len(q[1])):
+        for i in range(count):
+            arr.append(q[i].popleft())
+    arr.extend(q[0])
+    return arr
+
+def build():
+    q = [deque() for _ in range(4)]
+
+    arr0 = graph[n//2:]
+    arr1= graph[:n//2][::-1]
+
+    q[0].extend(arr0[len(arr0) // 2:])
+    q[3].extend(arr0[:len(arr0) // 2][::-1])
+    q[1].extend(arr1[len(arr1) // 2:])
+    q[2].extend(arr1[:len(arr1) // 2][::-1])
+
+    return q
+
 result = 0
 while 1:
-    if check():
-        break
-    add_fish()
     result += 1
-    replace_bowl()
+    min_fish() # 가장 적은 어항에 물고기 + 1
+    q = bowl_organ() # 어항을 쌓는 함수
+    q = fish_control(q) # 물고기 수 조절
+    graph = arrange(q) # 일렬로 정렬
+    q = build() # 4층 높이로 쌓는 정렬
+    q = fish_control(q) # 물고기 수 정렬
+    graph = arrange(q) # 일렬로 정렬
+    if check(): # 종료 조건을 만족하는지
+        break
 
 print(result)
