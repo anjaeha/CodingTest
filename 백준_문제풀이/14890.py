@@ -1,7 +1,6 @@
 n, l = map(int, input().split())
 graph = [list(map(int, input().split())) for _ in range(n)]
 
-
 def check(arr):
     visit = [False] * n  # 경사로
     for i in range(n - 1):
