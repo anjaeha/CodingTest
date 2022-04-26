@@ -12,7 +12,6 @@ for i in range(n):
         graph[i + 1][0] =0
         break
 
-
 def spread():
     global graph
     new_graph = [i[:] for i in graph]

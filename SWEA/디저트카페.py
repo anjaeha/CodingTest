@@ -1,42 +1,43 @@
-dx = [-1, 1, 1, -1]
-dy = [1, 1, -1, -1]
-# 우상, 우하, 좌하, 좌상
-
-def move(x, y):
-    global result
-    ex, ey = x, y
-    visit = [graph[x][y]]
-    d = 0
-    q = [(x, y, d, visit)]
-
-    while q:
-        cur = q.pop()
-        x, y, d, visit = q.pop()
-        
-        if d > 3:
-            continue
-
-        nx = x + dx[d]
-        ny = y + dy[d]
-
-        if nx == ex and ny == ey and d == 3:
-            result = max(result, len(visit))
-            continue
-        if 0 <= nx < n and 0 <= ny < n and graph[nx][ny] not in visit:
-            visit.append(graph[nx][ny])
-            q.append((nx, ny, d, visit[:]))
-            q.append((nx, ny, d + 1, visit[:]))
-
+from collections import deque
 
 T = int(input())
 
-for case in range(1, T + 1):
+dx = [1, 1, -1, -1]
+dy = [-1, 1, 1, -1]
+
+def search(sx, sy):
+    global result
+    visit = [graph[sx][sy]]
+    q = deque()
+    q.append((sx, sy, 0, visit))
+    answer = 0
+    while q:
+        x, y, cnt, visit = q.popleft()
+
+        if cnt > 3:
+            continue
+
+        nx = x + dx[cnt]
+        ny = y + dy[cnt]
+
+        if (nx, ny) == (sx, sy) and cnt == 3:
+            answer = max(answer, len(visit))
+            continue
+        if 0 <= nx < n and 0 <= ny < n:
+            if graph[nx][ny] not in visit:
+                visit.append(graph[nx][ny])
+                q.append((nx, ny, cnt + 1, visit[:]))
+                q.append((nx, ny, cnt, visit[:]))
+    return answer
+
+for tc in range(T):
     n = int(input())
     graph = [list(map(int, input().split())) for _ in range(n)]
 
     result = -1
-    for i in range(n):
-        for j in range(n):
-            move(i, j)
+    for x in range(n):
+        for y in range(n):
+            temp = search(x, y)
+            result = max(result, temp)
 
-    print("#%d %d" %(case, result))
+    print("#%d %d" %(tc + 1, result if result != 0 else -1))
