@@ -46,18 +46,18 @@ for tc in range(1, T + 1):
             if nx < -2000 or ny < -2000 or nx > 2000 or ny > 2000:
                 continue
 
-            if new_atom.get((nx, ny)) is None:
+            if ((nx, ny)) not in new_atom:
                 new_atom[(nx, ny)] = [d, k]
             else:
                 result += k
                 temp = new_atom[(nx, ny)][1]
                 new_atom[(nx, ny)][1] = 0
                 result += temp
-                if crush.get((nx, ny)) is None:
+                if ((nx, ny)) not in crush:
                     crush[(nx, ny)] = 1
 
         for nxy, value in crush.items():
-            new_atom.pop((nxy[0], nxy[1]))
+            del new_atom[(nxy[0], nxy[1])]
         atom = new_atom
 
     print("#%d %d" %(tc, result))
