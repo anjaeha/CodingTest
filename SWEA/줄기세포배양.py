@@ -96,9 +96,9 @@ for tc in range(1, T + 1):
                 continue
             survive = []
             for cur in life[ver]:
-                if (k - time) < (ver - 1): # time이 작을때 실행한 세포들은 사라지지만, time이 클 쯤에 실행한 세포들은 살아있는 상태로 끝이나기 때문에, 그것을 고려하여 더해주는 작업임.
+                if (k - time) < (ver - 1): # time이 작을때 실행한 세포들은 사라지지만, time이 클 쯤에 실행한 세포들은 살아있는 상태로 끝이나기 때문에, 그것을 고려하여 더해주는 작업임. -> 활성상태
                     survive.append(cur)
-                for d in range(4):
+                for d in range(4): -> 비활성상태
                     if board[cur[0] + dx[d]][cur[1] + dy[d]] == 0:
                         board[cur[0] + dx[d]][cur[1] + dy[d]] = ver
                         survive.append((cur[0] + dx[d], cur[1] + dy[d]))
